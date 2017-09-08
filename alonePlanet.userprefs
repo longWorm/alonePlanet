@@ -1,0 +1,14 @@
+﻿<Properties StartupConfiguration="{D039DC68-1FCA-4B01-BC17-44A15A170A43}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="alonePlanet/GLView1.cs">
+    <Files>
+      <File FileName="alonePlanet/GLView1.cs" Line="105" Column="14" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.alonePlanet PreferredExecutionTarget="Android.Android_Accelerated_x86" />
+  <MultiItemStartupConfigurations />
+</Properties>

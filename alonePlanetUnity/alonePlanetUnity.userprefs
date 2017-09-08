@@ -1,0 +1,17 @@
+﻿<Properties StartupConfiguration="{C66DE470-8ED1-C4DC-5891-E0020592BBF5}|">
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/main.cs">
+    <Files>
+      <File FileName="Assets/main.cs" Line="26" Column="5" />
+      <File FileName="Assets/StreamingAssets/level1.xml" Line="4" Column="35" />
+      <File FileName="Assets/GameObjectsManager.cs" Line="33" Column="30" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.alonePlanetUnity PreferredExecutionTarget="Unity.Editor" />
+</Properties>
