@@ -1,8 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <Body>
     <Stars>
-        <Star x="0.0" y="0.0" r="5"/>
-        <!--<Star x="3.0" y="3.0" r="2"/>-->
+        <Star x="0.0" y="0.0" r="1"/>
+        <Star x="3.0" y="3.0" r="1"/>
     </Stars>
-    <Planet x="-3.0" y="0.0" r="0.4"/>
+	<Coins>
+        <Coin x="-2.0" y="-2.0" r="0.3"/>
+        <Coin x="-2.0" y="2.0" r="0.3"/>
+        <Coin x="2.0" y="2.0" r="0.3"/>
+		<Coin x="2.0" y="-2.0" r="0.3"/>
+	</Coins>
+    <Planet x="-3.0" y="0.0" r="0.5"/>
 </Body>
