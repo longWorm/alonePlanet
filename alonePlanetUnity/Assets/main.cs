@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Threading;
 using System.Collections.Generic;
 using alonePlanetUnity.Assets;
 using UnityEngine;
@@ -9,42 +10,45 @@ public class main : MonoBehaviour {
 	public GameObject _starPrefab;
     public GameObject _coinPrefab;
     public GameObject _planetCoordinatesText;
+    public Animator _animator;
 
-    void Start () {
+    void Start () 
+    {
         _manager = new GameObjectsManager(_planet,_starPrefab,_coinPrefab);
-		_planet.transform.position = _manager.PlanetInitialPars;
+        Respawn();
     }
 
     void OnCollisionEnter(Collision col)
     {
         if (col.gameObject.tag == "star")
         {
-			var ps = _planet.GetComponent<ParticleSystem>();
+            var ps = _planet.GetComponent<ParticleSystem>();
 			ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams();
 			emitOverride.startLifetime = 20f;
 			ps.Emit(emitOverride, 20);
-			Invoke("Respawn", 0.5f);
+
+            //_animator.enabled = true;
+            //WaitForAnimation();
+
+            Respawn();
 		}
         else if (col.gameObject.tag == "coin")
         {
             var ps = col.gameObject.GetComponent<ParticleSystem>();
+            ps.transform.parent = null;
 			ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams();
 			emitOverride.startLifetime = 20f;
-			ps.Emit(emitOverride, 20);
+			ps.Emit(emitOverride, 100);
 
-            StartCoroutine(DestroyCoin(col.gameObject, 0.5f));
+            //_manager.DestroyCoin(col.gameObject);
         }
-    }
-
-    private IEnumerator DestroyCoin(GameObject coin, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        _manager.DeleteCoin(coin);
     }
 
     private void Respawn()
     {
-		_planet.transform.position = _manager.PlanetInitialPars;
+        _planet.transform.position = _manager.PlanetInitialCoordinates;
+        _planet.transform.localScale = _manager.PlanetInitialScale;
+        _planet.GetComponent<ConstantForce>().force = new Vector3(0f, 0f, 0f);
     }
 
 	void Update () {
@@ -77,7 +81,7 @@ public class main : MonoBehaviour {
         else if (Input.GetKey(KeyCode.DownArrow))
             force.y -= GameObjectsManager.DeltaSpeedOnUserInput;
         else if (Input.GetKey(KeyCode.R))
-			_planet.transform.position = _manager.PlanetInitialPars;
+            Respawn();
     }
 
     private void ProcessStarsInteractions(ref Vector3 force)
@@ -98,4 +102,25 @@ public class main : MonoBehaviour {
         force.x += deltaX; 
         force.y += deltaY;
     }
+
+    private void WaitForAnimation()
+    {
+        Debug.Log("WaitForAnimation enter");
+  //      Thread.Sleep(10);
+		//Debug.Log("WaitForAnimation enter2");
+
+		while (true)
+        {
+            if (_animator.GetCurrentAnimatorStateInfo(0).IsName("absorbAnimationClip"))
+                Debug.Log("absorbAnimationClip is running");
+            else if (_animator.GetCurrentAnimatorStateInfo(0).IsName("absorbAnimation"))
+                Debug.Log("absorbAnimation is running");
+            else
+                break;
+            //Thread.Sleep(10);
+        }
+
+        Debug.Log("Animation ended");
+        //yield return new WaitUntil(() => _animator.isActiveAndEnabled == false);
+	}
 }

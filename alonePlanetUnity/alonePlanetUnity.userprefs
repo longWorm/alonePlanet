@@ -1,10 +1,10 @@
 ﻿<Properties StartupConfiguration="{C66DE470-8ED1-C4DC-5891-E0020592BBF5}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/main.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/GameObjectsManager.cs">
     <Files>
-      <File FileName="Assets/main.cs" Line="66" Column="62" />
+      <File FileName="Assets/main.cs" Line="31" Column="1" />
       <File FileName="Assets/StreamingAssets/level1.xml" Line="11" Column="32" />
-      <File FileName="Assets/GameObjectsManager.cs" Line="13" Column="9" />
+      <File FileName="Assets/GameObjectsManager.cs" Line="35" Column="114" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

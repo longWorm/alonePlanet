@@ -7,24 +7,28 @@ using System.Globalization;
 
 namespace alonePlanetUnity.Assets
 {
-    public class GameObjectsManager : MonoBehaviour
+    public class GameObjectsManager
     {
-        public GameObject _planet;
 		public GameObject[] _stars;
 		public GameObject[] _coins;
 		
         public static float Delta = 5F;
         public static float DeltaSpeedOnUserInput = 1F;
 
-        private Vector3 _planetInitialPars;    
-        public Vector3 PlanetInitialPars{
-            get { return _planetInitialPars; }
-            private set { _planetInitialPars = value; }
+		private Vector3 _planetInitialCoordinates;
+		private Vector3 _planetInitialScale;
+
+        public Vector3 PlanetInitialCoordinates{
+            get { return _planetInitialCoordinates; }
+            private set { _planetInitialCoordinates = value; }
+        }
+        public Vector3 PlanetInitialScale{
+            get { return _planetInitialScale; }
+            private set { _planetInitialScale = value; }
         }
 
         public GameObjectsManager(GameObject planet, GameObject starPrefab, GameObject coinPrefab)
         {
-            _planet = planet;
             var path = System.IO.Path.Combine(Application.streamingAssetsPath, "level1.xml");
             var content = System.IO.File.ReadAllText(path);
 
@@ -32,8 +36,8 @@ namespace alonePlanetUnity.Assets
             xmldoc.LoadXml(content);
 
             var planetPars = GetPlanet(ref xmldoc);
-            PlanetInitialPars = _planet.transform.position = new Vector3(planetPars.x, planetPars.y, 1f);
-            _planet.transform.localScale = new Vector3(planetPars.r, planetPars.r, planetPars.r);
+            _planetInitialCoordinates = new Vector3(planetPars.x, planetPars.y, 1f);
+            _planetInitialScale = new Vector3(planetPars.r, planetPars.r, planetPars.r);
 
             var stars = GetStars(ref xmldoc);
             _stars = new GameObject[stars.GetLength(0)];
@@ -54,23 +58,23 @@ namespace alonePlanetUnity.Assets
 			}
 		}
 
-        public void DeleteCoin(GameObject coin)
+        public void DestroyCoin(GameObject coin)
         {
-            int index = 0;
-            foreach (var coinIt in _coins)
-            {
-                if (coinIt == coin)
-                {
-                    var tmp = new List<GameObject>(_coins);
-                    tmp.RemoveAt(index);
-                    _coins = tmp.ToArray();
-                    break;
-                }
-                index++;
-            }
-
-			Destroy(coin);
-        }
+			int index = 0;
+			foreach (var coinIt in _coins)
+			{
+				if (coinIt == coin)
+				{
+					var tmp = new List<GameObject>(_coins);
+					tmp.RemoveAt(index);
+					_coins = tmp.ToArray();
+					break;
+				}
+				index++;
+			}
+			
+			UnityEngine.Object.Destroy(coin);
+		}
 
         protected struct Circle
         {
