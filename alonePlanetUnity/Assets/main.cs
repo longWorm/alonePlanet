@@ -11,6 +11,7 @@ public class main : MonoBehaviour {
     public GameObject _coinPrefab;
     public GameObject _planetCoordinatesText;
     public Animator _animator;
+    public ParticleSystem _coinExplosion;
 
     void Start () 
     {
@@ -25,7 +26,7 @@ public class main : MonoBehaviour {
             var ps = _planet.GetComponent<ParticleSystem>();
 			ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams();
 			emitOverride.startLifetime = 20f;
-			ps.Emit(emitOverride, 20);
+			ps.Emit(emitOverride, 100);
 
             //_animator.enabled = true;
             //WaitForAnimation();
@@ -34,13 +35,17 @@ public class main : MonoBehaviour {
 		}
         else if (col.gameObject.tag == "coin")
         {
-            var ps = col.gameObject.GetComponent<ParticleSystem>();
-            ps.transform.parent = null;
+            //var ps = col.gameObject.GetComponent<ParticleSystem>();
+            //ps.transform.parent = null;
+
 			ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams();
 			emitOverride.startLifetime = 20f;
-			ps.Emit(emitOverride, 100);
+            _coinExplosion.transform.position = col.gameObject.transform.position;
+            _coinExplosion.Emit(emitOverride, 100);
+    
+            //Destroy(col.gameObject, 1);
+            _manager.DestroyCoin(col.gameObject);
 
-            //_manager.DestroyCoin(col.gameObject);
         }
     }
 
