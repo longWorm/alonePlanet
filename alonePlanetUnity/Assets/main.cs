@@ -13,48 +13,46 @@ public class main : MonoBehaviour {
     public Animator _animator;
     public ParticleSystem _coinExplosion;
 
+    private bool _inCollision = false;
+
     void Start () 
     {
-        _manager = new GameObjectsManager(_planet,_starPrefab,_coinPrefab);
+		_manager = new GameObjectsManager(_planet,_starPrefab,_coinPrefab);
         Respawn();
     }
 
     void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.tag == "star")
+        if (col.gameObject.tag == "star" && !_inCollision)
         {
             var ps = _planet.GetComponent<ParticleSystem>();
-			ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams();
-			emitOverride.startLifetime = 20f;
-			ps.Emit(emitOverride, 100);
-
-            //_animator.enabled = true;
-            //WaitForAnimation();
-
-            Respawn();
+            ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams();
+            emitOverride.startLifetime = 20f;
+            ps.Emit(emitOverride, 100);
+            _animator.SetTrigger("collision");
+            _inCollision = true;
 		}
         else if (col.gameObject.tag == "coin")
         {
-            //var ps = col.gameObject.GetComponent<ParticleSystem>();
-            //ps.transform.parent = null;
-
 			ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams();
 			emitOverride.startLifetime = 20f;
             _coinExplosion.transform.position = col.gameObject.transform.position;
             _coinExplosion.Emit(emitOverride, 100);
     
-            //Destroy(col.gameObject, 1);
             _manager.DestroyCoin(col.gameObject);
-
         }
     }
 
-    private void Respawn()
+    public void Respawn()
     {
+		_animator.ResetTrigger("collision");
+        _inCollision = false;
+
         _planet.transform.position = _manager.PlanetInitialCoordinates;
         _planet.transform.localScale = _manager.PlanetInitialScale;
         _planet.GetComponent<ConstantForce>().force = new Vector3(0f, 0f, 0f);
-    }
+        _manager.CreateCoins();
+	}
 
 	void Update () {
         UpdateForce();
@@ -107,25 +105,4 @@ public class main : MonoBehaviour {
         force.x += deltaX; 
         force.y += deltaY;
     }
-
-    private void WaitForAnimation()
-    {
-        Debug.Log("WaitForAnimation enter");
-  //      Thread.Sleep(10);
-		//Debug.Log("WaitForAnimation enter2");
-
-		while (true)
-        {
-            if (_animator.GetCurrentAnimatorStateInfo(0).IsName("absorbAnimationClip"))
-                Debug.Log("absorbAnimationClip is running");
-            else if (_animator.GetCurrentAnimatorStateInfo(0).IsName("absorbAnimation"))
-                Debug.Log("absorbAnimation is running");
-            else
-                break;
-            //Thread.Sleep(10);
-        }
-
-        Debug.Log("Animation ended");
-        //yield return new WaitUntil(() => _animator.isActiveAndEnabled == false);
-	}
 }

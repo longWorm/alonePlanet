@@ -15,8 +15,16 @@ namespace alonePlanetUnity.Assets
         public static float Delta = 5F;
         public static float DeltaSpeedOnUserInput = 1F;
 
-		private Vector3 _planetInitialCoordinates;
-		private Vector3 _planetInitialScale;
+        private Vector3 _planetInitialCoordinates;
+        private Vector3 _planetInitialScale;
+
+		protected struct Circle
+		{
+			public float x, y, r;
+		}
+		
+        private Circle[] _coinsParameters;
+        private GameObject _coinPrefab;
 
         public Vector3 PlanetInitialCoordinates{
             get { return _planetInitialCoordinates; }
@@ -29,6 +37,7 @@ namespace alonePlanetUnity.Assets
 
         public GameObjectsManager(GameObject planet, GameObject starPrefab, GameObject coinPrefab)
         {
+            _coinPrefab = coinPrefab;
             var path = System.IO.Path.Combine(Application.streamingAssetsPath, "level1.xml");
             var content = System.IO.File.ReadAllText(path);
 
@@ -41,44 +50,48 @@ namespace alonePlanetUnity.Assets
 
             var stars = GetStars(ref xmldoc);
             _stars = new GameObject[stars.GetLength(0)];
-			var i = 0;
+            var i = 0;
             foreach (var star in stars)
             {
                 _stars[i] = CreateGO(starPrefab, star);
                 i++;
             }
 
-            var coins = GetCoins(ref xmldoc);
-            _coins = new GameObject[coins.GetLength(0)];
-			i = 0;
-			foreach (var coin in coins)
+            _coinsParameters = GetCoins(ref xmldoc);
+            CreateCoins();
+        }
+
+        public void CreateCoins()
+        {
+            if (_coins != null)
+                foreach (var coin in _coins)
+                    UnityEngine.Object.Destroy(coin);
+            
+			_coins = new GameObject[_coinsParameters.GetLength(0)];
+			var i = 0;
+			foreach (var coin in _coinsParameters)
 			{
-                _coins[i] = CreateGO(coinPrefab, coin);
+				_coins[i] = CreateGO(_coinPrefab, coin);
 				i++;
 			}
 		}
 
         public void DestroyCoin(GameObject coin)
         {
-			int index = 0;
-			foreach (var coinIt in _coins)
-			{
-				if (coinIt == coin)
-				{
-					var tmp = new List<GameObject>(_coins);
-					tmp.RemoveAt(index);
-					_coins = tmp.ToArray();
-					break;
-				}
-				index++;
-			}
-			
-			UnityEngine.Object.Destroy(coin);
-		}
-
-        protected struct Circle
-        {
-            public float x, y, r;
+            int index = 0;
+            foreach (var coinIt in _coins)
+            {
+                if (coinIt == coin)
+                {
+                    var tmp = new List<GameObject>(_coins);
+                    tmp.RemoveAt(index);
+                    _coins = tmp.ToArray();
+                    break;
+                }
+                index++;
+            }
+            
+            UnityEngine.Object.Destroy(coin);
         }
 
         private static GameObject CreateGO(GameObject prefab, Circle par)

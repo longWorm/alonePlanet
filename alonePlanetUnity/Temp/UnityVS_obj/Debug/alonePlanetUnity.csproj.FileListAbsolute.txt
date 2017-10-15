@@ -1,5 +1,5 @@
-/Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_bin/Debug/Assembly-CSharp.dll
-/Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_bin/Debug/Assembly-CSharp.pdb
+/Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_bin/Debug/Assembly-CSharp.dll.dll
+/Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_bin/Debug/Assembly-CSharp.dll.pdb
 /Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_bin/Debug/Boo.Lang.dll
 /Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_bin/Debug/mscorlib.dll
 /Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_bin/Debug/nunit.framework.dll
@@ -57,7 +57,6 @@
 /Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_bin/Debug/UnityEditor.iOS.Extensions.Common.dll.mdb
 /Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_bin/Debug/Mono.Security.dll.mdb
 /Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_bin/Debug/Unity.UNetWeaver.dll.mdb
-/Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_obj/Debug/alonePlanetUnity.csprojResolveAssemblyReference.cache
 /Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_obj/Debug/alonePlanetUnity.csproj.CoreCompileInputs.cache
-/Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_obj/Debug/Assembly-CSharp.dll
-/Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_obj/Debug/Assembly-CSharp.pdb
+/Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_obj/Debug/Assembly-CSharp.dll.dll
+/Users/arseniyukolov/Projects/alonePlanet/alonePlanetUnity/Temp/UnityVS_obj/Debug/Assembly-CSharp.dll.pdb

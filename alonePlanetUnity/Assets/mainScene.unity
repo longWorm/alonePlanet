@@ -223,8 +223,8 @@ ParticleSystem:
       m_RotationOrder: 4
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
-  scalingMode: 1
-  randomSeed: 246500871
+  scalingMode: 2
+  randomSeed: 996935828
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -3439,7 +3439,7 @@ Animator:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 457191922}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 70ce66f51a0d64c71bd2db6296f8429f, type: 2}
   m_CullingMode: 0
