@@ -8,7 +8,7 @@ using System.Globalization;
 
 namespace alonePlanetUnity.Assets
 {
-    public class GameObjectsManager : MonoBehaviour
+    public class GameObjectsManager
     {
         public GameObject[] _stars;
         public GameObject[] _coins;
