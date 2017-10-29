@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Body>
     <Stars>
         <Star x="0.0" y="0.0" r="2"/>
@@ -10,5 +10,5 @@
         <Coin x="2.0" y="2.0" r="0.3"/>
 		<Coin x="2.0" y="-2.0" r="0.3"/>
 	</Coins>
-    <Planet x="-3.0" y="0.0" r="0.3"/>
+    <Planet x="-5.0" y="0.0" r="0.3"/>
 </Body>

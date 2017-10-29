@@ -1,65 +1,72 @@
 ﻿using System;
 using System.Xml;
 using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Globalization;
 
 namespace alonePlanetUnity.Assets
 {
-    public class GameObjectsManager
+    public class GameObjectsManager : MonoBehaviour
     {
-		public GameObject[] _stars;
-		public GameObject[] _coins;
-		
+        public GameObject[] _stars;
+        public GameObject[] _coins;
+
         public static float Delta = 5F;
         public static float DeltaSpeedOnUserInput = 1F;
 
         private Vector3 _planetInitialCoordinates;
         private Vector3 _planetInitialScale;
 
-		protected struct Circle
-		{
-			public float x, y, r;
-		}
-		
+        protected struct Circle
+        {
+            public float x, y, r;
+        }
+
         private Circle[] _coinsParameters;
         private GameObject _coinPrefab;
+        private GameObject _starPrefab;
 
-        public Vector3 PlanetInitialCoordinates{
+        public Vector3 PlanetInitialCoordinates
+        {
             get { return _planetInitialCoordinates; }
             private set { _planetInitialCoordinates = value; }
         }
-        public Vector3 PlanetInitialScale{
+        public Vector3 PlanetInitialScale
+        {
             get { return _planetInitialScale; }
             private set { _planetInitialScale = value; }
         }
 
-        public GameObjectsManager(GameObject planet, GameObject starPrefab, GameObject coinPrefab)
+        public GameObjectsManager(GameObject planet, GameObject starPrefab, GameObject coinPrefab, string text)
         {
             _coinPrefab = coinPrefab;
-            var path = System.IO.Path.Combine(Application.streamingAssetsPath, "level1.xml");
-            var content = System.IO.File.ReadAllText(path);
-
-            XmlDocument xmldoc = new XmlDocument();
-            xmldoc.LoadXml(content);
-
-            var planetPars = GetPlanet(ref xmldoc);
-            _planetInitialCoordinates = new Vector3(planetPars.x, planetPars.y, 1f);
-            _planetInitialScale = new Vector3(planetPars.r, planetPars.r, planetPars.r);
-
-            var stars = GetStars(ref xmldoc);
-            _stars = new GameObject[stars.GetLength(0)];
-            var i = 0;
-            foreach (var star in stars)
-            {
-                _stars[i] = CreateGO(starPrefab, star);
-                i++;
-            }
-
-            _coinsParameters = GetCoins(ref xmldoc);
-            CreateCoins();
+            _starPrefab = starPrefab;
+            Debug.Log("gameobjectmanager");
+            LoadLevel(text);
         }
+
+        public void LoadLevel(string content)
+        {
+			XmlDocument xmldoc = new XmlDocument();
+            xmldoc.LoadXml(content);
+			var planetPars = GetPlanet(ref xmldoc);
+			_planetInitialCoordinates = new Vector3(planetPars.x, planetPars.y, 1f);
+			_planetInitialScale = new Vector3(planetPars.r, planetPars.r, planetPars.r);
+			
+			var stars = GetStars(ref xmldoc);
+			_stars = new GameObject[stars.GetLength(0)];
+			var i = 0;
+			foreach (var star in stars)
+			{
+				_stars[i] = CreateGO(_starPrefab, star);
+				i++;
+			}
+			
+			_coinsParameters = GetCoins(ref xmldoc);
+			CreateCoins();            
+		}
 
         public void CreateCoins()
         {
@@ -114,6 +121,7 @@ namespace alonePlanetUnity.Assets
 
         private static Circle[] GetStars(ref XmlDocument xmldoc)
         {
+            Debug.Log("GetStars");
 			XmlNodeList stars = xmldoc.SelectNodes("/Body/Stars/Star");
             Circle[] result = new Circle[stars.Count];
             int i = 0;

@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using alonePlanetUnity.Assets;
 using UnityEngine;
 
-public class main : MonoBehaviour {
+public class main : MonoBehaviour
+{
     private GameObjectsManager _manager;
-	public GameObject _planet;
-	public GameObject _starPrefab;
+    public GameObject _planet;
+    public GameObject _starPrefab;
     public GameObject _coinPrefab;
     public GameObject _planetCoordinatesText;
     public Animator _animator;
@@ -15,9 +16,35 @@ public class main : MonoBehaviour {
 
     private bool _inCollision = false;
 
+#if UNITY_ANDROID
+
+    IEnumerator WaitForWWW(WWW www)
+    {
+        yield return www;
+    }
+
+    public void LoadLevel()
+    {
+        var path = "jar:file://" + Application.dataPath + "!/assets/level1.xml";
+        Debug.Log(path);
+        WWW www = new WWW(path);
+        StartCoroutine(WaitForWWW(www));
+        while (!www.isDone) { }
+        Debug.Log(www.text);
+        _manager = new GameObjectsManager(_planet, _starPrefab, _coinPrefab, www.text);
+    }
+#endif
+#if UNITY_STANDALONE_OSX
+    public void LoadLevel()
+    {
+        var path = System.IO.Path.Combine(Application.streamingAssetsPath, "level1.xml");
+        var content = System.IO.File.ReadAllText(path);
+        _manager = new GameObjectsManager(_planet, _starPrefab, _coinPrefab, content);
+    }
+#endif
     void Start () 
     {
-		_manager = new GameObjectsManager(_planet,_starPrefab,_coinPrefab);
+        LoadLevel();
         Respawn();
     }
 
@@ -85,6 +112,18 @@ public class main : MonoBehaviour {
             force.y -= GameObjectsManager.DeltaSpeedOnUserInput;
         else if (Input.GetKey(KeyCode.R))
             Respawn();
+        else if (Input.GetKey(KeyCode.Mouse0))
+        {
+            var touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            force.x = (touchPos.x - _planet.transform.position.x) * GameObjectsManager.DeltaSpeedOnUserInput;
+            force.y = (touchPos.y - _planet.transform.position.y) * GameObjectsManager.DeltaSpeedOnUserInput;
+        }
+        else if (Input.touchCount > 0)
+        {
+            var touchPos = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+            force.x = (touchPos.x - _planet.transform.position.x) * GameObjectsManager.DeltaSpeedOnUserInput * 0.1f;
+            force.y = (touchPos.y - _planet.transform.position.y) * GameObjectsManager.DeltaSpeedOnUserInput * 0.1f;
+        }
     }
 
     private void ProcessStarsInteractions(ref Vector3 force)
