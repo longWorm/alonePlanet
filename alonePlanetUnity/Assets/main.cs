@@ -25,24 +25,28 @@ public class main : MonoBehaviour
 
     public void LoadLevel()
     {
-        var path = "jar:file://" + Application.dataPath + "!/assets/level1.xml";
-        Debug.Log(path);
+        var level = PlayerPrefs.GetString("level", "trulala");
+        level += ".xml";
+        Debug.Log(level);
+        var path = "jar:file://" + Application.dataPath + "!/assets/" + level;
         WWW www = new WWW(path);
         StartCoroutine(WaitForWWW(www));
         while (!www.isDone) { }
-        Debug.Log(www.text);
-        _manager = new GameObjectsManager(_planet, _starPrefab, _coinPrefab, www.text);
+        _manager = new GameObjectsManager(_starPrefab, _coinPrefab, www.text);
     }
 #endif
 #if UNITY_STANDALONE_OSX
     public void LoadLevel()
     {
-        var path = System.IO.Path.Combine(Application.streamingAssetsPath, "level1.xml");
+        var level = PlayerPrefs.GetString("level", "trulala");
+        Debug.Log(level);
+        level += ".xml";
+        var path = System.IO.Path.Combine(Application.streamingAssetsPath, level);
         var content = System.IO.File.ReadAllText(path);
-        _manager = new GameObjectsManager(_planet, _starPrefab, _coinPrefab, content);
+        _manager = new GameObjectsManager(_starPrefab, _coinPrefab, content);
     }
 #endif
-    void Start () 
+    void Start()
     {
         LoadLevel();
         Respawn();
@@ -58,39 +62,40 @@ public class main : MonoBehaviour
             ps.Emit(emitOverride, 100);
             _animator.SetTrigger("collision");
             _inCollision = true;
-		}
+        }
         else if (col.gameObject.tag == "coin")
         {
-			ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams();
-			emitOverride.startLifetime = 20f;
+            ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams();
+            emitOverride.startLifetime = 20f;
             _coinExplosion.transform.position = col.gameObject.transform.position;
             _coinExplosion.Emit(emitOverride, 100);
-    
+
             _manager.DestroyCoin(col.gameObject);
         }
     }
 
     public void Respawn()
     {
-		_animator.ResetTrigger("collision");
+        _animator.ResetTrigger("collision");
         _inCollision = false;
 
         _planet.transform.position = _manager.PlanetInitialCoordinates;
         _planet.transform.localScale = _manager.PlanetInitialScale;
         _planet.GetComponent<ConstantForce>().force = new Vector3(0f, 0f, 0f);
         _manager.CreateCoins();
-	}
+    }
 
-	void Update () {
+    void Update()
+    {
         UpdateForce();
-	}
+    }
 
     private void UpdateForce()
     {
         var force = new Vector3(0, 0, 0);
         ProcessUserInput(ref force);
         ProcessStarsInteractions(ref force);
-		_planet.GetComponent<ConstantForce>().force = new Vector3(force.x, force.y, 0.0f);
+        _planet.GetComponent<ConstantForce>().force = new Vector3(force.x, force.y, 0.0f);
         UpdatePlanetCoordinatesText();
     }
 
@@ -118,12 +123,14 @@ public class main : MonoBehaviour
             force.x = (touchPos.x - _planet.transform.position.x) * GameObjectsManager.DeltaSpeedOnUserInput;
             force.y = (touchPos.y - _planet.transform.position.y) * GameObjectsManager.DeltaSpeedOnUserInput;
         }
+#if UNITY_ANDROID
         else if (Input.touchCount > 0)
         {
             var touchPos = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
             force.x = (touchPos.x - _planet.transform.position.x) * GameObjectsManager.DeltaSpeedOnUserInput * 0.1f;
             force.y = (touchPos.y - _planet.transform.position.y) * GameObjectsManager.DeltaSpeedOnUserInput * 0.1f;
         }
+#endif
     }
 
     private void ProcessStarsInteractions(ref Vector3 force)

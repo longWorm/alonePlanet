@@ -1,10 +1,15 @@
 ﻿<Properties StartupConfiguration="{C66DE470-8ED1-C4DC-5891-E0020592BBF5}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/main.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/StreamingAssets/3.xml">
     <Files>
-      <File FileName="Assets/GameObjectsManager.cs" Line="54" Column="1" />
-      <File FileName="Assets/StreamingAssets/level1.xml" Line="1" Column="1" />
-      <File FileName="Assets/main.cs" Line="28" Column="75" />
+      <File FileName="Assets/GameObjectsManager.cs" Line="106" Column="111" />
+      <File FileName="Assets/main.cs" Line="30" Column="16" />
+      <File FileName="Assets/MainMenu.cs" Line="3" Column="1" />
+      <File FileName="Assets/QuitToMainMenu.cs" Line="11" Column="64" />
+      <File FileName="Assets/SelectLevelButton.cs" Line="6" Column="1" />
+      <File FileName="Assets/StreamingAssets/1.xml" Line="8" Column="40" />
+      <File FileName="Assets/StreamingAssets/2.xml" Line="9" Column="41" />
+      <File FileName="Assets/StreamingAssets/3.xml" Line="9" Column="37" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

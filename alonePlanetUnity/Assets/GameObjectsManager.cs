@@ -39,17 +39,17 @@ namespace alonePlanetUnity.Assets
             private set { _planetInitialScale = value; }
         }
 
-        public GameObjectsManager(GameObject planet, GameObject starPrefab, GameObject coinPrefab, string text)
+        public GameObjectsManager(GameObject starPrefab, GameObject coinPrefab, string text)
         {
             _coinPrefab = coinPrefab;
             _starPrefab = starPrefab;
-            Debug.Log("gameobjectmanager");
             LoadLevel(text);
         }
 
         public void LoadLevel(string content)
         {
 			XmlDocument xmldoc = new XmlDocument();
+            Debug.Log(content);
             xmldoc.LoadXml(content);
 			var planetPars = GetPlanet(ref xmldoc);
 			_planetInitialCoordinates = new Vector3(planetPars.x, planetPars.y, 1f);
@@ -121,7 +121,6 @@ namespace alonePlanetUnity.Assets
 
         private static Circle[] GetStars(ref XmlDocument xmldoc)
         {
-            Debug.Log("GetStars");
 			XmlNodeList stars = xmldoc.SelectNodes("/Body/Stars/Star");
             Circle[] result = new Circle[stars.Count];
             int i = 0;
