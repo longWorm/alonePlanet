@@ -25,10 +25,7 @@ public class main : MonoBehaviour
 
     public void LoadLevel()
     {
-        var level = PlayerPrefs.GetString("level", "trulala");
-        level += ".xml";
-        Debug.Log(level);
-        var path = "jar:file://" + Application.dataPath + "!/assets/" + level;
+        var path = "jar:file://" + Application.dataPath + "!/assets/" + GetCurrentLevel();
         WWW www = new WWW(path);
         StartCoroutine(WaitForWWW(www));
         while (!www.isDone) { }
@@ -38,10 +35,7 @@ public class main : MonoBehaviour
 #if UNITY_STANDALONE_OSX
     public void LoadLevel()
     {
-        var level = PlayerPrefs.GetString("level", "trulala");
-        Debug.Log(level);
-        level += ".xml";
-        var path = System.IO.Path.Combine(Application.streamingAssetsPath, level);
+        var path = System.IO.Path.Combine(Application.streamingAssetsPath, GetCurrentLevel());
         var content = System.IO.File.ReadAllText(path);
         _manager = new GameObjectsManager(_starPrefab, _coinPrefab, content);
     }
@@ -150,5 +144,13 @@ public class main : MonoBehaviour
 
         force.x += deltaX; 
         force.y += deltaY;
+    }
+
+    private string GetCurrentLevel()
+    {
+        var level = PlayerPrefs.GetString("level", "1"/*default*/);
+        level += ".xml";
+        return level;
+
     }
 }

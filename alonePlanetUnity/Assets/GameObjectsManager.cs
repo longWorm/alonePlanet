@@ -49,7 +49,6 @@ namespace alonePlanetUnity.Assets
         public void LoadLevel(string content)
         {
 			XmlDocument xmldoc = new XmlDocument();
-            Debug.Log(content);
             xmldoc.LoadXml(content);
 			var planetPars = GetPlanet(ref xmldoc);
 			_planetInitialCoordinates = new Vector3(planetPars.x, planetPars.y, 1f);
