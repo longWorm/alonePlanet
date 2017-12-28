@@ -105,10 +105,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\GameObjectsManager.cs" />
-    <Compile Include="Assets\main.cs" />
-    <Compile Include="Assets\MainMenu.cs" />
-    <Compile Include="Assets\QuitToMainMenu.cs" />
+    <Compile Include="Assets\scripts\GameObjectsManager.cs" />
+    <Compile Include="Assets\scripts\main.cs" />
+    <Compile Include="Assets\scripts\MainMenu.cs" />
+    <Compile Include="Assets\scripts\QuitToMainMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\StreamingAssets\1.xml" />
