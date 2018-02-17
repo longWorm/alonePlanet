@@ -12,6 +12,7 @@ public class MainMenu : MonoBehaviour
     public GameObject _buttonTemplate;
     public GameObject _contentPtr;
     public Animator _animator;
+    public GameObject _levelButtonsContainer;
 
     private bool _levelListShown = false;
     private List<string> _levelList = new List<string>();
@@ -22,30 +23,41 @@ public class MainMenu : MonoBehaviour
         _startGame.GetComponent<Button>().onClick.AddListener(StartGame);
         _selectLevel.GetComponent<Button>().onClick.AddListener(SelectLevel);
         _quit.GetComponent<Button>().onClick.AddListener(Quit);
-        //_selectLevelView.GetComponent<Canvas>().enabled = false;
+        RectTransform rect = _levelButtonsContainer.GetComponent<RectTransform>();
+        Debug.Log(rect.rect.width);
+        _contentPtr.GetComponent<GridLayoutGroup>().cellSize = new Vector2(100
+                                                                                      ,100);
 
         _levelList.Add("1");
         _levelList.Add("2");
         _levelList.Add("3");
         _levelList.Add("4");
         _levelList.Add("5");
-        _levelList.Add("5");
-        _levelList.Add("5");
-        _levelList.Add("5");
-        _levelList.Add("5");
-        _levelList.Add("5");
-        _levelList.Add("5");
-        _levelList.Add("5");
-        _levelList.Add("5");
-        _levelList.Add("5");
+        _levelList.Add("6");
+        _levelList.Add("7");
+        _levelList.Add("8");
+        //_levelList.Add("3");
+        //_levelList.Add("4");
+        //_levelList.Add("5");
+        //_levelList.Add("6");
+        //_levelList.Add("1");
+        //_levelList.Add("2");
+        //_levelList.Add("3");
+        //_levelList.Add("4");
+        //_levelList.Add("5");
+        //_levelList.Add("6");
+
         foreach (var level in _levelList)
         {
             GameObject button = Instantiate(_buttonTemplate) as GameObject;
-            button.GetComponent<Button>().onClick.AddListener(delegate { Button_Click(level); });
+            button.GetComponent<Button>().onClick.AddListener(delegate { Button_Click("1"); });
             button.GetComponentInChildren<Text>().text = level;
-            button.transform.SetParent(_contentPtr.transform);
+            button.transform.SetParent(_contentPtr.transform, false);
             //button.transform.SetParent(_selectLevelView1.transform);
         }
+        rect = (RectTransform)_levelButtonsContainer.transform;
+        Debug.Log(rect.rect.width);
+       
 	}
 
     private void StartGame()
@@ -66,7 +78,6 @@ public class MainMenu : MonoBehaviour
 
     private void Quit()
     {
-        Debug.Log("quit");
         Application.Quit();
     }
 

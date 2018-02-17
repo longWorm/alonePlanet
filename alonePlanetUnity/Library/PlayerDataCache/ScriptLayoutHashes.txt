@@ -1,5 +1,5 @@
 OSXStandalone
-0859ac243e8a1ad964603620db30177e Assembly-CSharp.dll:.MainMenu
+56478f387e93e50019cd7842f887e793 Assembly-CSharp.dll:.MainMenu
 dc07d7ad69b399a46e92c483bf1c04ca UnityEngine.Analytics.dll:UnityEngine.Analytics.AnalyticsTracker
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
 9f07aaefd0255462bb6e4f9e5da6b2d4 UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationTrack
