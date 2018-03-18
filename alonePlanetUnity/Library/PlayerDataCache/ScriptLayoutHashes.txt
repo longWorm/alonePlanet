@@ -1,5 +1,5 @@
-OSXStandalone
-56478f387e93e50019cd7842f887e793 Assembly-CSharp.dll:.MainMenu
+Android
+8b20fa4ca51a15ab8ca0faded34847fb Assembly-CSharp.dll:.MainMenu
 dc07d7ad69b399a46e92c483bf1c04ca UnityEngine.Analytics.dll:UnityEngine.Analytics.AnalyticsTracker
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
 9f07aaefd0255462bb6e4f9e5da6b2d4 UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationTrack
@@ -132,3 +132,4 @@ bc68edb0af574bf79f9550ead8ebae5c UnityEngine.HoloLens.dll:UnityEngine.Audio.Audi
 c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.VR.WSA.SpatialMappingCollider
 45f3431f0103c41611e8d4eec3d439df UnityEngine.HoloLens.dll:UnityEngine.VR.WSA.SpatialMappingRenderer
 a155a825f4e87786b3bbc30ea04519ad Assembly-CSharp.dll:.QuitToMainMenu
+6d74b895b44e44d2d5f6e20231282fc4 Assembly-CSharp.dll:.SelectLevel
