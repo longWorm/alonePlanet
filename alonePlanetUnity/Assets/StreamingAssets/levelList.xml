@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<levels>
+    <level name="1" enabled="true" file="1"/>
+    <level name="2" enabled="false" file="2"/>
+    <level name="3" enabled="false" file="3"/>
+    <level name="4" enabled="false" file="4"/>
+    <level name="5" enabled="false" file="5"/>
+    <level name="6" enabled="false" file="6"/>
+</levels>

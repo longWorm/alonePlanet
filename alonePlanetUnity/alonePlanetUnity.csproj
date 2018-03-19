@@ -118,6 +118,7 @@
     <None Include="Assets\StreamingAssets\4.xml" />
     <None Include="Assets\StreamingAssets\5.xml" />
     <None Include="Assets\StreamingAssets\6.xml" />
+    <None Include="Assets\StreamingAssets\levelList.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
