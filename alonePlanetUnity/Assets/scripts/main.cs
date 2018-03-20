@@ -16,33 +16,9 @@ public class main : MonoBehaviour
 
     private bool _inCollision = false;
 
-#if UNITY_ANDROID
-
-    IEnumerator WaitForWWW(WWW www)
-    {
-        yield return www;
-    }
-
-    public void LoadLevel()
-    {
-        var path = "jar:file://" + Application.dataPath + "!/assets/" + GetCurrentLevel();
-        WWW www = new WWW(path);
-        StartCoroutine(WaitForWWW(www));
-        while (!www.isDone) { }
-        _manager = new GameObjectsManager(_starPrefab, _coinPrefab, www.text);
-    }
-#endif
-#if UNITY_STANDALONE_OSX
-    public void LoadLevel()
-    {
-        var path = System.IO.Path.Combine(Application.streamingAssetsPath, GetCurrentLevel());
-        var content = System.IO.File.ReadAllText(path);
-        _manager = new GameObjectsManager(_starPrefab, _coinPrefab, content);
-    }
-#endif
     void Start()
     {
-        LoadLevel();
+        _manager = new GameObjectsManager(_starPrefab, _coinPrefab, FileReader.LoadFile(GetCurrentLevel(), this));
         Respawn();
     }
 

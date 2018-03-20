@@ -6,38 +6,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-
 public class SelectLevel : MonoBehaviour {
 
     public GameObject _contentPtr;
     public GameObject _buttonTemplate;
     public GameObject _backToMainMenuButton;
-
-#if UNITY_ANDROID
-
-    IEnumerator WaitForWWW(WWW www)
-    {
-        yield return www;
-    }
-
-    private string LoadFile(string fileName)
-    {
-        var path = "jar:file://" + Application.dataPath + "!/assets/" + fileName;
-        WWW www = new WWW(path);
-        StartCoroutine(WaitForWWW(www));
-        while (!www.isDone) { }
-        return www.text;
-    }
-#endif
-
-#if UNITY_STANDALONE_OSX
-    private string LoadFile(string fileName)
-    {
-        var path = System.IO.Path.Combine(Application.streamingAssetsPath, fileName);
-        var content = System.IO.File.ReadAllText(path);
-        return content;
-    }
-#endif
 
     void Start () {
         LoadLevels();
@@ -55,7 +28,7 @@ public class SelectLevel : MonoBehaviour {
 
     private void LoadLevels()
     {
-        var content = LoadFile("levelList.xml");
+        var content = FileReader.LoadFile("levelList.xml", this);
         XmlDocument xmldoc = new XmlDocument();
         xmldoc.LoadXml(content);
         XmlNodeList levels = xmldoc.SelectNodes("/levels/level");
