@@ -14,6 +14,8 @@ public class MainMenu : MonoBehaviour
         _continueGame.GetComponent<Button>().onClick.AddListener(ContinueGame);
         _selectLevel.GetComponent<Button>().onClick.AddListener(SelectLevel);
         _quit.GetComponent<Button>().onClick.AddListener(Quit);
+        PlayerPrefs.SetInt(GameConstants.CurrentLevelIsCompleted, 0);
+        PlayerPrefs.SetString(GameConstants.CurrentLevel, "");
     }
 
     private void ContinueGame()

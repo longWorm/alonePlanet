@@ -3,13 +3,13 @@ using System.Threading;
 using System.Collections.Generic;
 using alonePlanetUnity.Assets;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class main : MonoBehaviour
 {
     private GameObjectsManager _manager;
     public GameObject _planet;
-    public GameObject _starPrefab;
-    public GameObject _coinPrefab;
+    public GameObject _starPrefab, _wallPrefab, _coinPrefab;
     public GameObject _planetCoordinatesText;
     public Animator _animator;
     public ParticleSystem _coinExplosion;
@@ -18,7 +18,7 @@ public class main : MonoBehaviour
 
     void Start()
     {
-        _manager = new GameObjectsManager(_starPrefab, _coinPrefab, FileReader.LoadFile(GetCurrentLevel(), this));
+        _manager = new GameObjectsManager(_starPrefab, _coinPrefab, _wallPrefab, FileReader.LoadFile(GetCurrentLevel(), this));
         Respawn();
     }
 
@@ -45,6 +45,8 @@ public class main : MonoBehaviour
             _coinExplosion.Emit(emitOverride, 100);
 
             _manager.DestroyCoin(col.gameObject);
+            if (_manager._coins.Length == 0)
+                OnLevelComplete();
         }
     }
 
@@ -128,9 +130,14 @@ public class main : MonoBehaviour
 
     private string GetCurrentLevel()
     {
-        var level = PlayerPrefs.GetString("level", "1"/*default*/);
+        var level = PlayerPrefs.GetString(GameConstants.CurrentLevel, "1"/*default*/);
         level += ".xml";
         return level;
+    }
 
+    private void OnLevelComplete()
+    {
+        PlayerPrefs.SetInt(GameConstants.CurrentLevelIsCompleted, 1);
+        SceneManager.LoadScene("SelectLevel");
     }
 }

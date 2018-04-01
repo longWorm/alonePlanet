@@ -299,6 +299,17 @@ GameObject:
   m_PrefabParentObject: {fileID: 1021702543923030, guid: 313bb1129c80241d2b79db337b7c988a,
     type: 2}
   m_PrefabInternal: {fileID: 2033617836}
+--- !u!122 &457191923
+Halo:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 457191922}
+  m_Enabled: 1
+  m_Color:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_Size: 0.5
 --- !u!199 &457191930
 ParticleSystemRenderer:
   serializedVersion: 4
@@ -410,7 +421,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 2
-  randomSeed: -906425995
+  randomSeed: -1588766463
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -4255,6 +4266,12 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 114081598112732340, guid: 313bb1129c80241d2b79db337b7c988a,
+        type: 2}
+      propertyPath: _wallPrefab
+      value: 
+      objectReference: {fileID: 1158680457505136, guid: b59fe3a6e93a943f0a9ea8a342ccb0c3,
+        type: 2}
     m_RemovedComponents:
     - {fileID: 114475664185132376, guid: 313bb1129c80241d2b79db337b7c988a, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 313bb1129c80241d2b79db337b7c988a, type: 2}

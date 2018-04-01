@@ -13,12 +13,16 @@ public class SelectLevel : MonoBehaviour {
     public GameObject _backToMainMenuButton;
 
     void Start () {
+        if (PlayerPrefs.GetInt(GameConstants.CurrentLevelIsCompleted) != 0)
+            MarkCurrentLevelAsCompleted();
+        
         LoadLevels();
         _backToMainMenuButton.GetComponent<Button>().onClick.AddListener(delegate { BackToMainMenu(); });
 	}
 
     private void ButtonClick(string level) {
-        PlayerPrefs.SetString("level", level);
+        PlayerPrefs.SetString(GameConstants.CurrentLevel, level);
+        PlayerPrefs.SetInt(GameConstants.CurrentLevelIsCompleted, 0);
         SceneManager.LoadScene("mainScene");
     }
 
@@ -40,5 +44,21 @@ public class SelectLevel : MonoBehaviour {
             button.transform.SetParent(_contentPtr.transform, false);
             button.GetComponent<Button>().interactable = Convert.ToBoolean(level.Attributes.GetNamedItem("enabled").Value);
         }
+    }
+
+    private void MarkCurrentLevelAsCompleted()
+    {
+        if (PlayerPrefs.GetString(GameConstants.CurrentLevel).Length == 0)
+            return;
+        
+        var content = FileReader.LoadFile("levelList.xml", this);
+        XmlDocument xmldoc = new XmlDocument();
+        xmldoc.LoadXml(content);
+        var currentLevel = Convert.ToInt16(PlayerPrefs.GetString(GameConstants.CurrentLevel));
+        currentLevel++;
+        Debug.Log("/levels/level[file=\"" + Convert.ToString(currentLevel) + "\"]");
+        var node = xmldoc.SelectSingleNode("/levels/level[@file=\"" + Convert.ToString(currentLevel) + "\"]");
+        node.Attributes["enabled"].Value = "true";
+        FileReader.WriteToFile("levelList.xml", xmldoc.OuterXml);
     }
 }

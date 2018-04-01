@@ -7,6 +7,7 @@ TagManager:
   - planet
   - coin
   - star
+  - wall
   layers:
   - Default
   - TransparentFX

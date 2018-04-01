@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 33542300464060278}
   - component: {fileID: 135522314083822108}
   - component: {fileID: 23039949714518058}
+  - component: {fileID: 122630288483679364}
   m_Layer: 0
   m_Name: coin
   m_TagString: coin
@@ -81,6 +82,17 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1100182063984360}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!122 &122630288483679364
+Halo:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1100182063984360}
+  m_Enabled: 1
+  m_Color:
+    serializedVersion: 2
+    rgba: 4278255379
+  m_Size: 0.5
 --- !u!135 &135522314083822108
 SphereCollider:
   m_ObjectHideFlags: 1
