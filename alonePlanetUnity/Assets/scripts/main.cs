@@ -58,6 +58,9 @@ public class main : MonoBehaviour
         _planet.transform.position = _manager.PlanetInitialCoordinates;
         _planet.transform.localScale = _manager.PlanetInitialScale;
         _planet.GetComponent<ConstantForce>().force = new Vector3(0f, 0f, 0f);
+        _planet.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
+        _planet.GetComponent<Rigidbody>().angularVelocity = new Vector3(0f, 0f, 0f);
+
         _manager.CreateCoins();
     }
 

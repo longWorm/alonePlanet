@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
+using System.Xml;
 
 public class MainMenu : MonoBehaviour
 {
@@ -15,7 +15,15 @@ public class MainMenu : MonoBehaviour
         _selectLevel.GetComponent<Button>().onClick.AddListener(SelectLevel);
         _quit.GetComponent<Button>().onClick.AddListener(Quit);
         PlayerPrefs.SetInt(GameConstants.CurrentLevelIsCompleted, 0);
-        PlayerPrefs.SetString(GameConstants.CurrentLevel, "");
+
+        var content = FileReader.LoadFile("levelList.xml", this);
+        XmlDocument xmldoc = new XmlDocument();
+        xmldoc.LoadXml(content);
+        var root = xmldoc.SelectSingleNode("/levels");
+        if (root.Attributes["currentLevel"] != null)
+            PlayerPrefs.SetString(GameConstants.CurrentLevel, root.Attributes["currentLevel"].Value);
+        else
+            PlayerPrefs.SetString(GameConstants.CurrentLevel, "");
     }
 
     private void ContinueGame()

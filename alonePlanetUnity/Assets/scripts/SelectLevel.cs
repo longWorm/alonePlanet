@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Xml;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -59,6 +57,17 @@ public class SelectLevel : MonoBehaviour {
         Debug.Log("/levels/level[file=\"" + Convert.ToString(currentLevel) + "\"]");
         var node = xmldoc.SelectSingleNode("/levels/level[@file=\"" + Convert.ToString(currentLevel) + "\"]");
         node.Attributes["enabled"].Value = "true";
+
+        var root = xmldoc.SelectSingleNode("/levels");
+        if (root.Attributes["currentLevel"] == null)
+        {
+            XmlAttribute newAttribute = xmldoc.CreateAttribute("currentLevel");
+            newAttribute.Value = Convert.ToString(currentLevel);
+            root.Attributes.Append(newAttribute);
+        }
+        else
+            root.Attributes["currentLevel"].Value = Convert.ToString(currentLevel);
+
         FileReader.WriteToFile("levelList.xml", xmldoc.OuterXml);
     }
 }
