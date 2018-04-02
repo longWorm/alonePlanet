@@ -421,7 +421,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 2
-  randomSeed: -1588766463
+  randomSeed: 727855547
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -4272,6 +4272,11 @@ Prefab:
       value: 
       objectReference: {fileID: 1158680457505136, guid: b59fe3a6e93a943f0a9ea8a342ccb0c3,
         type: 2}
+    - target: {fileID: 114081598112732340, guid: 313bb1129c80241d2b79db337b7c988a,
+        type: 2}
+      propertyPath: _camera
+      value: 
+      objectReference: {fileID: 862939808}
     m_RemovedComponents:
     - {fileID: 114475664185132376, guid: 313bb1129c80241d2b79db337b7c988a, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 313bb1129c80241d2b79db337b7c988a, type: 2}

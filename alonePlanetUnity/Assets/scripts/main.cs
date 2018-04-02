@@ -11,6 +11,8 @@ public class main : MonoBehaviour
     public GameObject _planet;
     public GameObject _starPrefab, _wallPrefab, _coinPrefab;
     public GameObject _planetCoordinatesText;
+    public GameObject _camera;
+
     public Animator _animator;
     public ParticleSystem _coinExplosion;
 
@@ -67,6 +69,7 @@ public class main : MonoBehaviour
     void Update()
     {
         UpdateForce();
+        _camera.transform.position = new Vector3(_planet.transform.position.x, _planet.transform.position.y, -10f);
     }
 
     private void UpdateForce()
