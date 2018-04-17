@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Body>
     <Stars>
-        <Star x="-3.0" y="0.0" r="0.5"/>
-        <Star x="3.0" y="0.0" r="0.5"/>
+        <Star x="-4.0" y="0.0" r="3.0"/>
+        <Star x="4.0" y="0.0" r="3.0"/>
     </Stars>
 	<Coins>
-        <Coin x="-4.0" y="0" r="0.5"/>
-        <Coin x="+4.0" y="0" r="0.5"/>
+        <Coin x="-7.0" y="0" r="0.5"/>
+        <Coin x="7.0" y="0" r="0.5"/>
 	</Coins>
-    <Planet x="0.0" y="0.0" r="0.8"/>
+    <Planet x="0.0" y="0.0" r="0.5"/>
 </Body>

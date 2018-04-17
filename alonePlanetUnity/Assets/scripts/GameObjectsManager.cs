@@ -13,9 +13,13 @@ namespace alonePlanetUnity.Assets
         public GameObject[] _stars;
 		public GameObject[] _walls;
         public GameObject[] _coins;
+		public GameObject[] _arrows;
 
-        public static float Delta = 5F;
+        private GameObject _canvasForControls;
+
+        public static float Delta = 10F;
         public static float DeltaSpeedOnUserInput = 1F;
+        public static float DeltaSpeedOnUserInputTouch = 0.001F;
 
         private Vector3 _planetInitialCoordinates;
         private Vector3 _planetInitialScale;
@@ -31,7 +35,7 @@ namespace alonePlanetUnity.Assets
         }
 
         private Circle[] _coinsParameters;
-        private GameObject _coinPrefab, _wallPrefab, _starPrefab;
+        private GameObject _coinPrefab, _wallPrefab, _starPrefab, _arrowPrefab;
 
         public Vector3 PlanetInitialCoordinates
         {
@@ -44,11 +48,15 @@ namespace alonePlanetUnity.Assets
             private set { _planetInitialScale = value; }
         }
 
-        public GameObjectsManager(GameObject starPrefab, GameObject coinPrefab, GameObject wallPrefab, string text)
+        public GameObjectsManager(GameObject starPrefab, GameObject coinPrefab, GameObject wallPrefab, GameObject arrowPrefab
+                                  , GameObject canvasForControls
+                                  , string text)
         {
             _coinPrefab = coinPrefab;
             _wallPrefab = wallPrefab;
             _starPrefab = starPrefab;
+            _arrowPrefab = arrowPrefab;
+            _canvasForControls = canvasForControls;
 
             LoadLevel(text);
         }
@@ -79,7 +87,11 @@ namespace alonePlanetUnity.Assets
             }
 			
 			_coinsParameters = GetCoins(ref xmldoc);
-			CreateCoins();            
+			CreateCoins();
+
+            _arrows = new GameObject[_coins.Length];
+            for (int j = 0; j != _coins.Length; ++j)
+                _arrows[j] = CreateGO(_arrowPrefab, _canvasForControls, 0.5f, 0.5f, 0);
 		}
 
         public void CreateCoins()
@@ -115,6 +127,17 @@ namespace alonePlanetUnity.Assets
             UnityEngine.Object.Destroy(coin);
         }
 
+        // Arrows
+        private static GameObject CreateGO(GameObject prefab, GameObject parent, float x, float y, float angle)
+        {
+            var result = GameObject.Instantiate(prefab, new Vector3(x, y, 5.0f), Quaternion.identity);
+            result.transform.position = new Vector3(x, y, 5.0f);
+            result.SetActive(true);
+            result.transform.SetParent(parent.transform, false);
+            return result;
+        }
+
+        // Stars and coins
         private static GameObject CreateGO(GameObject prefab, Circle par)
         {
             var result = GameObject.Instantiate(prefab, new Vector3(par.x, par.y, 5.0f), Quaternion.identity);
@@ -124,6 +147,7 @@ namespace alonePlanetUnity.Assets
             return result;
 		}
 
+        // Walls
         private static GameObject CreateGO(GameObject prefab, Rectangle par)
         {
             var result = GameObject.Instantiate(prefab, new Vector3(par.x, par.y, 5.0f), Quaternion.identity);

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Threading;
-using System.Collections.Generic;
+﻿using System;
 using alonePlanetUnity.Assets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,9 +7,12 @@ public class main : MonoBehaviour
 {
     private GameObjectsManager _manager;
     public GameObject _planet;
-    public GameObject _starPrefab, _wallPrefab, _coinPrefab;
+    public GameObject _starPrefab, _wallPrefab, _coinPrefab, _arrowPrefab;
     public GameObject _planetCoordinatesText;
     public GameObject _camera;
+    public GameObject _canvasForControls;
+
+    private bool[] _arrowsVisible;
 
     public Animator _animator;
     public ParticleSystem _coinExplosion;
@@ -20,7 +21,11 @@ public class main : MonoBehaviour
 
     void Start()
     {
-        _manager = new GameObjectsManager(_starPrefab, _coinPrefab, _wallPrefab, FileReader.LoadFile(GetCurrentLevel(), this));
+        _manager = new GameObjectsManager(_starPrefab, _coinPrefab, _wallPrefab, _arrowPrefab, _canvasForControls
+                                          , FileReader.LoadFile(GetCurrentLevel(), this));
+        _arrowsVisible = new bool[_manager._arrows.Length];
+        for (int i = 0; i != _arrowsVisible.Length; ++i)
+            _arrowsVisible[i] = false;
         Respawn();
     }
 
@@ -57,8 +62,10 @@ public class main : MonoBehaviour
         _animator.ResetTrigger("collision");
         _inCollision = false;
 
+        _planet.SetActive(false);
         _planet.transform.position = _manager.PlanetInitialCoordinates;
         _planet.transform.localScale = _manager.PlanetInitialScale;
+        _planet.SetActive(true);
         _planet.GetComponent<ConstantForce>().force = new Vector3(0f, 0f, 0f);
         _planet.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
         _planet.GetComponent<Rigidbody>().angularVelocity = new Vector3(0f, 0f, 0f);
@@ -70,6 +77,7 @@ public class main : MonoBehaviour
     {
         UpdateForce();
         _camera.transform.position = new Vector3(_planet.transform.position.x, _planet.transform.position.y, -10f);
+        UpdateArrowPosition();
     }
 
     private void UpdateForce()
@@ -78,7 +86,54 @@ public class main : MonoBehaviour
         ProcessUserInput(ref force);
         ProcessStarsInteractions(ref force);
         _planet.GetComponent<ConstantForce>().force = new Vector3(force.x, force.y, 0.0f);
-        UpdatePlanetCoordinatesText();
+        //UpdatePlanetCoordinatesText();
+    }
+
+    private void UpdateArrowPosition()
+    {
+        if (_manager._coins.Length == 0)
+            return;
+
+        int index = 0;
+        foreach(var coin in _manager._coins)
+        {
+            if (coin.GetComponent<Renderer>().isVisible)
+            {
+                if (_arrowsVisible[index])
+                {
+                    _arrowsVisible[index] = false;
+                    _manager._arrows[index].SetActive(false);
+                }
+            }
+            else
+            {
+                if (!_arrowsVisible[index])
+                {
+                    _arrowsVisible[index] = true;
+                    _manager._arrows[index].SetActive(true);
+                }
+
+                var xDistance = _planet.transform.position.x - coin.transform.position.x;
+                var yDistance = _planet.transform.position.y - coin.transform.position.y;
+
+                var angle = Math.Atan(yDistance / xDistance);
+
+                var x = (float)Math.Cos(angle) * 16f;
+                var y = (float)Math.Sin(angle) * 16f;
+
+                if (xDistance > 0)
+                {
+                    x *= -1;
+                    y *= -1;
+                    angle += Math.PI;
+                }
+
+                _manager._arrows[index].transform.localPosition = new Vector3(x, y, 4f);
+                var targetRotation = Quaternion.Euler(0, 0, (float)(angle * 180 / Math.PI - 90));
+                _manager._arrows[index].transform.rotation = Quaternion.Slerp(_manager._arrows[index].transform.rotation, targetRotation, 5f);
+            }
+            ++index;
+        }
     }
 
     private void UpdatePlanetCoordinatesText()
@@ -102,15 +157,21 @@ public class main : MonoBehaviour
         else if (Input.GetKey(KeyCode.Mouse0))
         {
             var touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            force.x = (touchPos.x - _planet.transform.position.x) * GameObjectsManager.DeltaSpeedOnUserInput;
-            force.y = (touchPos.y - _planet.transform.position.y) * GameObjectsManager.DeltaSpeedOnUserInput;
+            force.x += (touchPos.x - _planet.transform.position.x) * GameObjectsManager.DeltaSpeedOnUserInput;
+            force.y += (touchPos.y - _planet.transform.position.y) * GameObjectsManager.DeltaSpeedOnUserInput;
         }
 #if UNITY_ANDROID
         else if (Input.touchCount > 0)
         {
             var touchPos = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
-            force.x = (touchPos.x - _planet.transform.position.x) * GameObjectsManager.DeltaSpeedOnUserInput * 0.1f;
-            force.y = (touchPos.y - _planet.transform.position.y) * GameObjectsManager.DeltaSpeedOnUserInput * 0.1f;
+            bool changeX = Math.Abs(touchPos.x - _planet.transform.position.x) > 0.1f;
+            bool changeY = Math.Abs(touchPos.y - _planet.transform.position.y) > 0.1f;
+
+            if (changeX)
+                force.x += (touchPos.x > _planet.transform.position.x) ? GameObjectsManager.DeltaSpeedOnUserInputTouch : (-1) * GameObjectsManager.DeltaSpeedOnUserInputTouch;
+
+            if (changeY)
+                force.y += (touchPos.y > _planet.transform.position.y) ? GameObjectsManager.DeltaSpeedOnUserInputTouch : (-1) * GameObjectsManager.DeltaSpeedOnUserInputTouch;
         }
 #endif
     }

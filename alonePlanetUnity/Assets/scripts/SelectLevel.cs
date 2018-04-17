@@ -54,8 +54,10 @@ public class SelectLevel : MonoBehaviour {
         xmldoc.LoadXml(content);
         var currentLevel = Convert.ToInt16(PlayerPrefs.GetString(GameConstants.CurrentLevel));
         currentLevel++;
-        Debug.Log("/levels/level[file=\"" + Convert.ToString(currentLevel) + "\"]");
         var node = xmldoc.SelectSingleNode("/levels/level[@file=\"" + Convert.ToString(currentLevel) + "\"]");
+        if (node == null)
+            return;
+        
         node.Attributes["enabled"].Value = "true";
 
         var root = xmldoc.SelectSingleNode("/levels");
