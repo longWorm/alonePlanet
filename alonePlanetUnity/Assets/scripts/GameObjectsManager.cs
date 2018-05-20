@@ -15,7 +15,7 @@ namespace alonePlanetUnity.Assets
         public GameObject[] _coins;
 		public GameObject[] _arrows;
 
-        private GameObject _canvasForControls;
+        private GameObject _canvasForControls, _canvasForGameObjects;
 
         public static float Delta = 10F;
         public static float DeltaSpeedOnUserInput = 1F;
@@ -34,7 +34,9 @@ namespace alonePlanetUnity.Assets
             public float x, y, w, h;
         }
 
-        private Circle[] _coinsParameters;
+        private Circle[] _coinsParameters, _starsParameters;
+        private Rectangle[] _wallsParameters;
+
         private GameObject _coinPrefab, _wallPrefab, _starPrefab, _arrowPrefab;
 
         public Vector3 PlanetInitialCoordinates
@@ -42,6 +44,7 @@ namespace alonePlanetUnity.Assets
             get { return _planetInitialCoordinates; }
             private set { _planetInitialCoordinates = value; }
         }
+
         public Vector3 PlanetInitialScale
         {
             get { return _planetInitialScale; }
@@ -49,7 +52,7 @@ namespace alonePlanetUnity.Assets
         }
 
         public GameObjectsManager(GameObject starPrefab, GameObject coinPrefab, GameObject wallPrefab, GameObject arrowPrefab
-                                  , GameObject canvasForControls
+                                  , GameObject canvasForControls, GameObject canvasForGameObjects
                                   , string text)
         {
             _coinPrefab = coinPrefab;
@@ -57,8 +60,18 @@ namespace alonePlanetUnity.Assets
             _starPrefab = starPrefab;
             _arrowPrefab = arrowPrefab;
             _canvasForControls = canvasForControls;
+            _canvasForGameObjects = canvasForGameObjects;
 
             LoadLevel(text);
+            CreateGameObjects();
+        }
+
+        public void CreateGameObjects()
+        {
+            CreateCoins();
+            CreateStars();
+            CreateWalls();
+            CreateArrows();
         }
 
         public void LoadLevel(string content)
@@ -69,32 +82,53 @@ namespace alonePlanetUnity.Assets
 			_planetInitialCoordinates = new Vector3(planetPars.x, planetPars.y, 1f);
 			_planetInitialScale = new Vector3(planetPars.r, planetPars.r, planetPars.r);
 			
-			var stars = GetStars(ref xmldoc);
-			_stars = new GameObject[stars.GetLength(0)];
-			var i = 0;
-			foreach (var star in stars)
-			{
-				_stars[i] = CreateGO(_starPrefab, star);
-				i++;
-			}
+            _starsParameters = GetStars(ref xmldoc);
+            _coinsParameters = GetCoins(ref xmldoc);
+            _wallsParameters = GetWalls(ref xmldoc);
+		}
 
-            var walls = GetWalls(ref xmldoc);
-            _walls = new GameObject[walls.GetLength(0)];
-            i = 0;
-            foreach(var wall in walls)
-            {
-                _walls[i] = CreateGO(_wallPrefab, wall);
-            }
-			
-			_coinsParameters = GetCoins(ref xmldoc);
-			CreateCoins();
+        private void CreateArrows()
+        {
+            if (_arrows != null)
+                foreach (var arrow in _arrows)
+                    UnityEngine.Object.Destroy(arrow);
 
             _arrows = new GameObject[_coins.Length];
             for (int j = 0; j != _coins.Length; ++j)
                 _arrows[j] = CreateGO(_arrowPrefab, _canvasForControls, 0.5f, 0.5f, 0);
-		}
+        }
 
-        public void CreateCoins()
+        private void CreateStars()
+        {
+            if (_stars != null)
+                foreach (var star in _stars)
+                    UnityEngine.Object.Destroy(star);
+
+            _stars = new GameObject[_starsParameters.GetLength(0)];
+            var i = 0;
+            foreach (var star in _starsParameters)
+            {
+                _stars[i] = CreateGO(_starPrefab, _canvasForGameObjects, star);
+                i++;
+            }
+        }
+
+        private void CreateWalls()
+        {
+            if (_walls != null)
+                foreach (var wall in _walls)
+                    UnityEngine.Object.Destroy(wall);
+
+            _walls = new GameObject[_wallsParameters.GetLength(0)];
+            var i = 0;
+            foreach (var wall in _wallsParameters)
+            {
+                _walls[i] = CreateGO(_wallPrefab, _canvasForGameObjects, wall);
+                i++;
+            }
+        }
+
+        private void CreateCoins()
         {
             if (_coins != null)
                 foreach (var coin in _coins)
@@ -104,7 +138,7 @@ namespace alonePlanetUnity.Assets
 			var i = 0;
 			foreach (var coin in _coinsParameters)
 			{
-				_coins[i] = CreateGO(_coinPrefab, coin);
+                _coins[i] = CreateGO(_coinPrefab, _canvasForGameObjects, coin);
 				i++;
 			}
 		}
@@ -138,21 +172,23 @@ namespace alonePlanetUnity.Assets
         }
 
         // Stars and coins
-        private static GameObject CreateGO(GameObject prefab, Circle par)
+        private GameObject CreateGO(GameObject prefab, GameObject parent, Circle par)
         {
             var result = GameObject.Instantiate(prefab, new Vector3(par.x, par.y, 5.0f), Quaternion.identity);
 			result.transform.position = new Vector3(par.x, par.y, 1f);
 			result.transform.localScale = new Vector3(par.r, par.r, par.r);
+            result.transform.SetParent(parent.transform);
 			result.SetActive(true);
             return result;
 		}
 
         // Walls
-        private static GameObject CreateGO(GameObject prefab, Rectangle par)
+        private static GameObject CreateGO(GameObject prefab, GameObject parent, Rectangle par)
         {
             var result = GameObject.Instantiate(prefab, new Vector3(par.x, par.y, 5.0f), Quaternion.identity);
             result.transform.position = new Vector3(par.x, par.y, 1f);
             result.transform.localScale = new Vector3(par.w, par.h, 1f);
+            result.transform.SetParent(parent.transform);
             result.SetActive(true);
             return result;
         }

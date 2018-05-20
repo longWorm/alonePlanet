@@ -2,16 +2,18 @@
 using alonePlanetUnity.Assets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class main : MonoBehaviour
 {
     private GameObjectsManager _manager;
     public GameObject _planet;
-    public GameObject _starPrefab, _wallPrefab, _coinPrefab, _arrowPrefab;
+    public GameObject _starPrefab, _wallPrefab, _coinPrefab, _arrowPrefab, _explosionPrefab;
     public GameObject _planetCoordinatesText;
     public GameObject _camera;
-    public GameObject _canvasForControls;
+    public GameObject _canvasForControls, _canvasForGameObjects;
 
+    private GameObject _explosion;
     private bool[] _arrowsVisible;
 
     public Animator _animator;
@@ -21,8 +23,10 @@ public class main : MonoBehaviour
 
     void Start()
     {
-        _manager = new GameObjectsManager(_starPrefab, _coinPrefab, _wallPrefab, _arrowPrefab, _canvasForControls
+        _manager = new GameObjectsManager(_starPrefab, _coinPrefab, _wallPrefab, _arrowPrefab
+                                          , _canvasForControls, _canvasForGameObjects
                                           , FileReader.LoadFile(GetCurrentLevel(), this));
+        _explosion = GameObject.Instantiate(_explosionPrefab, _planet.transform.position, Quaternion.identity);
         _arrowsVisible = new bool[_manager._arrows.Length];
         for (int i = 0; i != _arrowsVisible.Length; ++i)
             _arrowsVisible[i] = false;
@@ -41,6 +45,8 @@ public class main : MonoBehaviour
             ps.Emit(emitOverride, 100);
             _animator.SetTrigger("collision");
             _inCollision = true;
+            _explosion.transform.position = _planet.transform.position;
+            _explosion.GetComponent<ParticleSystem>().Play();
         }
         else if (col.gameObject.tag == "coin")
         {
@@ -61,16 +67,21 @@ public class main : MonoBehaviour
     {
         _animator.ResetTrigger("collision");
         _inCollision = false;
+        var scale = _canvasForGameObjects.GetComponent<CanvasScaler>().scaleFactor;
 
         _planet.SetActive(false);
         _planet.transform.position = _manager.PlanetInitialCoordinates;
-        _planet.transform.localScale = _manager.PlanetInitialScale;
+        _planet.transform.localScale = _manager.PlanetInitialScale / scale;
+        _planet.transform.SetParent(_canvasForGameObjects.transform);
         _planet.SetActive(true);
         _planet.GetComponent<ConstantForce>().force = new Vector3(0f, 0f, 0f);
         _planet.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
         _planet.GetComponent<Rigidbody>().angularVelocity = new Vector3(0f, 0f, 0f);
 
-        _manager.CreateCoins();
+        _manager.CreateGameObjects();
+
+        ////
+        ///_canvasForGameObjects.transform.GetChild(0).transform.position = _planet.transform.position;
     }
 
     void Update()
@@ -160,6 +171,10 @@ public class main : MonoBehaviour
             force.x += (touchPos.x - _planet.transform.position.x) * GameObjectsManager.DeltaSpeedOnUserInput;
             force.y += (touchPos.y - _planet.transform.position.y) * GameObjectsManager.DeltaSpeedOnUserInput;
         }
+        else if (Input.GetAxis("Mouse ScrollWheel") > 0f)
+            _canvasForGameObjects.GetComponent<CanvasScaler>().scaleFactor *= 1.2f;
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
+            _canvasForGameObjects.GetComponent<CanvasScaler>().scaleFactor /= 1.2f;
 #if UNITY_ANDROID
         else if (Input.touchCount > 0)
         {
