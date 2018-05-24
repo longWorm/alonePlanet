@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Globalization;
+using UnityEngine.UI;
 
 namespace alonePlanetUnity.Assets
 {
@@ -21,7 +22,7 @@ namespace alonePlanetUnity.Assets
         public static float DeltaSpeedOnUserInput = 1F;
         public static float DeltaSpeedOnUserInputTouch = 0.001F;
 
-        private Vector3 _planetInitialCoordinates;
+        private Vector3 _planetInitialCoordinatesUnscaled;
         private Vector3 _planetInitialScale;
 
         protected struct Circle
@@ -41,8 +42,12 @@ namespace alonePlanetUnity.Assets
 
         public Vector3 PlanetInitialCoordinates
         {
-            get { return _planetInitialCoordinates; }
-            private set { _planetInitialCoordinates = value; }
+            get {
+                return _planetInitialCoordinatesUnscaled;
+            }
+            private set {
+                _planetInitialCoordinatesUnscaled = value;
+            }
         }
 
         public Vector3 PlanetInitialScale
@@ -79,8 +84,9 @@ namespace alonePlanetUnity.Assets
 			XmlDocument xmldoc = new XmlDocument();
             xmldoc.LoadXml(content);
 			var planetPars = GetPlanet(ref xmldoc);
-			_planetInitialCoordinates = new Vector3(planetPars.x, planetPars.y, 1f);
-			_planetInitialScale = new Vector3(planetPars.r, planetPars.r, planetPars.r);
+
+            PlanetInitialCoordinates = new Vector3(planetPars.x, planetPars.y, 1f);
+            PlanetInitialScale = new Vector3(planetPars.r, planetPars.r, planetPars.r);
 			
             _starsParameters = GetStars(ref xmldoc);
             _coinsParameters = GetCoins(ref xmldoc);
@@ -166,7 +172,7 @@ namespace alonePlanetUnity.Assets
         {
             var result = GameObject.Instantiate(prefab, new Vector3(x, y, 5.0f), Quaternion.identity);
             result.transform.position = new Vector3(x, y, 5.0f);
-            result.SetActive(true);
+            result.SetActive(false);
             result.transform.SetParent(parent.transform, false);
             return result;
         }
@@ -175,7 +181,7 @@ namespace alonePlanetUnity.Assets
         private GameObject CreateGO(GameObject prefab, GameObject parent, Circle par)
         {
             var result = GameObject.Instantiate(prefab, new Vector3(par.x, par.y, 5.0f), Quaternion.identity);
-			result.transform.position = new Vector3(par.x, par.y, 1f);
+            result.transform.position = new Vector3(par.x, par.y, 1f);
 			result.transform.localScale = new Vector3(par.r, par.r, par.r);
             result.transform.SetParent(parent.transform);
 			result.SetActive(true);
@@ -193,26 +199,30 @@ namespace alonePlanetUnity.Assets
             return result;
         }
 
-        private static Circle GetCircleFromNode(XmlNode node)
+        private Circle GetCircleFromNode(XmlNode node)
         {
+            var rect = _canvasForGameObjects.GetComponent<RectTransform>().rect;
+
             Circle result = new Circle();
-			result.x = float.Parse(node.Attributes.GetNamedItem("x").Value, CultureInfo.InvariantCulture);
-			result.y = float.Parse(node.Attributes.GetNamedItem("y").Value, CultureInfo.InvariantCulture);
+			result.x = rect.width / 2 + float.Parse(node.Attributes.GetNamedItem("x").Value, CultureInfo.InvariantCulture);
+            result.y = rect.height / 2 + float.Parse(node.Attributes.GetNamedItem("y").Value, CultureInfo.InvariantCulture);
 			result.r = float.Parse(node.Attributes.GetNamedItem("r").Value, CultureInfo.InvariantCulture);
             return result;
 		}
 
-        private static Rectangle GetRectFromNode(XmlNode node)
+        private Rectangle GetRectFromNode(XmlNode node)
         {
             Rectangle rect = new Rectangle();
-            rect.x = float.Parse(node.Attributes.GetNamedItem("x").Value, CultureInfo.InvariantCulture);
-            rect.y = float.Parse(node.Attributes.GetNamedItem("y").Value, CultureInfo.InvariantCulture);
+            var canvasRect = _canvasForGameObjects.GetComponent<RectTransform>().rect;
+
+            rect.x = canvasRect.width / 2 + float.Parse(node.Attributes.GetNamedItem("x").Value, CultureInfo.InvariantCulture);
+            rect.y = canvasRect.height / 2 + float.Parse(node.Attributes.GetNamedItem("y").Value, CultureInfo.InvariantCulture);
             rect.w = float.Parse(node.Attributes.GetNamedItem("w").Value, CultureInfo.InvariantCulture);
             rect.h = float.Parse(node.Attributes.GetNamedItem("h").Value, CultureInfo.InvariantCulture);
             return rect;
         }
 
-        private static Circle[] GetStars(ref XmlDocument xmldoc)
+        private Circle[] GetStars(ref XmlDocument xmldoc)
         {
 			XmlNodeList stars = xmldoc.SelectNodes("/Body/Stars/Star");
             Circle[] result = new Circle[stars.Count];
@@ -225,7 +235,7 @@ namespace alonePlanetUnity.Assets
             return result;
 		}
 
-        private static Rectangle[] GetWalls(ref XmlDocument xmldoc)
+        private Rectangle[] GetWalls(ref XmlDocument xmldoc)
         {
             XmlNodeList walls = xmldoc.SelectNodes("/Body/Walls/Wall");
             Rectangle[] result = new Rectangle[walls.Count];
@@ -239,7 +249,7 @@ namespace alonePlanetUnity.Assets
 
         }
 
-		private static Circle[] GetCoins(ref XmlDocument xmldoc)
+		private Circle[] GetCoins(ref XmlDocument xmldoc)
 		{
 			XmlNodeList coins = xmldoc.SelectNodes("/Body/Coins/Coin");
 			Circle[] result = new Circle[coins.Count];
@@ -252,7 +262,7 @@ namespace alonePlanetUnity.Assets
 			return result;
 		}
 
-        private static Circle GetPlanet(ref XmlDocument xmldoc)
+        private Circle GetPlanet(ref XmlDocument xmldoc)
         {
             XmlNode planet = xmldoc.SelectSingleNode("/Body/Planet");
             return GetCircleFromNode(planet);
