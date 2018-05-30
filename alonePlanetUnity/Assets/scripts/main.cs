@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using alonePlanetUnity.Assets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -39,6 +40,13 @@ public class main : MonoBehaviour
         for (int i = 0; i != _arrowsVisible.Length; ++i)
             _arrowsVisible[i] = false;
         Respawn();
+
+        Lean.Touch.LeanTouch.OnGesture += OnGesture;
+    }
+
+    private void OnDisable()
+    {
+        Lean.Touch.LeanTouch.OnGesture -= OnGesture;
     }
 
     void OnCollisionEnter(Collision col)
@@ -176,9 +184,9 @@ public class main : MonoBehaviour
             force.y += (touchPos.y - _planet.transform.position.y) * GameObjectsManager.DeltaSpeedOnUserInput;
         }
         else if (Input.GetAxis("Mouse ScrollWheel") > 0f)
-            _camera.GetComponent<Camera>().orthographicSize *= 1.2f;
+            Zoom(1.2f);
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
-            _camera.GetComponent<Camera>().orthographicSize /= 1.2f;
+            Zoom(0.83f);
 #if UNITY_ANDROID
         else if (Input.touchCount == 1)
         {
@@ -193,6 +201,11 @@ public class main : MonoBehaviour
                 force.y += (touchPos.y > _planet.transform.position.y) ? GameObjectsManager.DeltaSpeedOnUserInputTouch : (-1) * GameObjectsManager.DeltaSpeedOnUserInputTouch;
         }
 #endif
+    }
+
+    private void OnGesture(List<Lean.Touch.LeanFinger> fingers)
+    {
+        Zoom(1 / Lean.Touch.LeanGesture.GetPinchScale(fingers));
     }
 
     private void ProcessStarsInteractions(ref Vector3 force)
@@ -225,5 +238,18 @@ public class main : MonoBehaviour
     {
         PlayerPrefs.SetInt(GameConstants.CurrentLevelIsCompleted, 1);
         SceneManager.LoadScene("SelectLevel");
+    }
+
+    private void Zoom(float scale)
+    {
+        var oldValue = _camera.GetComponent<Camera>().orthographicSize;
+        var newValue = oldValue * scale;
+        if (newValue < GameConstants.MinimumZoom)
+            newValue = GameConstants.MinimumZoom;
+        else if (newValue > GameConstants.MaximiumZoom)
+            newValue = GameConstants.MaximiumZoom;
+
+        if (newValue != oldValue)
+            _camera.GetComponent<Camera>().orthographicSize = newValue;
     }
 }
