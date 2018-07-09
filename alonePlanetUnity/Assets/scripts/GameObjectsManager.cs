@@ -11,10 +11,7 @@ namespace alonePlanetUnity.Assets
 {
     public class GameObjectsManager
     {
-        public GameObject[] _stars;
-		public GameObject[] _walls;
-        public GameObject[] _coins;
-		public GameObject[] _arrows;
+        public GameObject[] _stars, _walls, _coins, _teleports, _arrows;
 
         private GameObject _canvasForControls, _canvasForGameObjects;
 
@@ -35,10 +32,10 @@ namespace alonePlanetUnity.Assets
             public float x, y, w, h;
         }
 
-        private Circle[] _coinsParameters, _starsParameters;
+        private Circle[] _coinsParameters, _starsParameters, _teleportsParameters;
         private Rectangle[] _wallsParameters;
 
-        private GameObject _coinPrefab, _wallPrefab, _starPrefab, _arrowPrefab;
+        private GameObject _coinPrefab, _wallPrefab, _starPrefab, _arrowPrefab, _teleportPrefab;
 
         public Vector3 PlanetInitialCoordinates
         {
@@ -56,7 +53,7 @@ namespace alonePlanetUnity.Assets
             private set { _planetInitialScale = value; }
         }
 
-        public GameObjectsManager(GameObject starPrefab, GameObject coinPrefab, GameObject wallPrefab, GameObject arrowPrefab
+        public GameObjectsManager(GameObject starPrefab, GameObject coinPrefab, GameObject wallPrefab, GameObject arrowPrefab, GameObject teleportPrefab
                                   , GameObject canvasForControls, GameObject canvasForGameObjects
                                   , string text)
         {
@@ -64,6 +61,7 @@ namespace alonePlanetUnity.Assets
             _wallPrefab = wallPrefab;
             _starPrefab = starPrefab;
             _arrowPrefab = arrowPrefab;
+            _teleportPrefab = teleportPrefab;
             _canvasForControls = canvasForControls;
             _canvasForGameObjects = canvasForGameObjects;
 
@@ -75,6 +73,7 @@ namespace alonePlanetUnity.Assets
         {
             CreateCoins();
             CreateStars();
+            CreateTeleports();
             CreateWalls();
             CreateArrows();
         }
@@ -89,6 +88,7 @@ namespace alonePlanetUnity.Assets
             PlanetInitialScale = new Vector3(planetPars.r, planetPars.r, planetPars.r);
 			
             _starsParameters = GetStars(ref xmldoc);
+            _teleportsParameters = GetTeleports(ref xmldoc);
             _coinsParameters = GetCoins(ref xmldoc);
             _wallsParameters = GetWalls(ref xmldoc);
 		}
@@ -115,6 +115,21 @@ namespace alonePlanetUnity.Assets
             foreach (var star in _starsParameters)
             {
                 _stars[i] = CreateGO(_starPrefab, _canvasForGameObjects, star);
+                i++;
+            }
+        }
+
+        private void CreateTeleports()
+        {
+            if (_teleports != null)
+                foreach (var teleport in _teleports)
+                    UnityEngine.Object.Destroy(teleport);
+
+            _teleports = new GameObject[_teleportsParameters.GetLength(0)];
+            var i = 0;
+            foreach (var teleport in _teleportsParameters)
+            {
+                _teleports[i] = CreateGO(_teleportPrefab, _canvasForGameObjects, teleport);
                 i++;
             }
         }
@@ -234,6 +249,19 @@ namespace alonePlanetUnity.Assets
 			}
             return result;
 		}
+
+        private Circle[] GetTeleports(ref XmlDocument xmldoc)
+        {
+            XmlNodeList stars = xmldoc.SelectNodes("/Body/Teleports/Teleport");
+            Circle[] result = new Circle[stars.Count];
+            int i = 0;
+            foreach (XmlNode star in stars)
+            {
+                result[i] = GetCircleFromNode(star);
+                i++;
+            }
+            return result;
+        }
 
         private Rectangle[] GetWalls(ref XmlDocument xmldoc)
         {

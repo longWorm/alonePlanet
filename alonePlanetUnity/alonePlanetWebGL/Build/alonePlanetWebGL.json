@@ -1,0 +1,9 @@
+{
+"TOTAL_MEMORY": 104857600,
+"dataUrl": "alonePlanetWebGL.data.unityweb",
+"asmCodeUrl": "alonePlanetWebGL.asm.code.unityweb",
+"asmMemoryUrl": "alonePlanetWebGL.asm.memory.unityweb",
+"asmFrameworkUrl": "alonePlanetWebGL.asm.framework.unityweb",
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20"
+}

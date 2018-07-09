@@ -1,14 +1,14 @@
 ﻿<Properties StartupConfiguration="{C66DE470-8ED1-C4DC-5891-E0020592BBF5}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/scripts/GameContants.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/scripts/main.cs">
     <Files>
-      <File FileName="Assets/scripts/main.cs" Line="208" Column="6" />
-      <File FileName="Assets/scripts/GameObjectsManager.cs" Line="86" Column="43" />
+      <File FileName="Assets/scripts/FileReader.cs" Line="42" Column="27" />
+      <File FileName="Assets/scripts/MainMenu.cs" Line="19" Column="20" />
+      <File FileName="Assets/scripts/main.cs" Line="292" Column="88" />
+      <File FileName="Assets/scripts/GameObjectsManager.cs" Line="113" Column="66" />
+      <File FileName="Assets/scripts/SelectLevel.cs" Line="34" Column="6" />
+      <File FileName="Assets/StreamingAssets/levelList.xml" Line="1" Column="372" />
       <File FileName="Assets/StreamingAssets/1.xml" Line="9" Column="36" />
-      <File FileName="Assets/externalAssets/LeanTouch/Scripts/LeanGesture.cs" Line="382" Column="36" />
-      <File FileName="Assets/externalAssets/LeanTouch/Examples/Scripts/LeanTouchEvents.cs" Line="59" Column="70" />
-      <File FileName="Assets/externalAssets/LeanTouch/Examples/Scripts/LeanCameraZoom.cs" Line="70" Column="29" />
-      <File FileName="Assets/scripts/GameContants.cs" Line="8" Column="19" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

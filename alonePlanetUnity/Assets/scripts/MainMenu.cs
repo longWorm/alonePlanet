@@ -16,14 +16,21 @@ public class MainMenu : MonoBehaviour
         _quit.GetComponent<Button>().onClick.AddListener(Quit);
         PlayerPrefs.SetInt(GameConstants.CurrentLevelIsCompleted, 0);
 
-        var content = FileReader.LoadFile("levelList.xml", this);
+        FileReader.LoadFile("levelList.xml", this, LevelListIsReady);
+    }
+
+    public void LevelListIsReady(string content)
+    {
         XmlDocument xmldoc = new XmlDocument();
         xmldoc.LoadXml(content);
         var root = xmldoc.SelectSingleNode("/levels");
-        if (root.Attributes["currentLevel"] != null)
-            PlayerPrefs.SetString(GameConstants.CurrentLevel, root.Attributes["currentLevel"].Value);
-        else
-            PlayerPrefs.SetString(GameConstants.CurrentLevel, "");
+        if (PlayerPrefs.GetString(GameConstants.CurrentLevel, "") == "")
+        {
+            if (root.Attributes["currentLevel"] != null)
+                PlayerPrefs.SetString(GameConstants.CurrentLevel, root.Attributes["currentLevel"].Value);
+            else
+                PlayerPrefs.SetString(GameConstants.CurrentLevel, "");
+        }
     }
 
     private void ContinueGame()

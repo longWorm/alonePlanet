@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml;
 using alonePlanetUnity.Assets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,7 +10,7 @@ public class main : MonoBehaviour
 {
     private GameObjectsManager _manager;
     public GameObject _planet;
-    public GameObject _starPrefab, _wallPrefab, _coinPrefab, _arrowPrefab, _explosionPrefab;
+    public GameObject _starPrefab, _wallPrefab, _coinPrefab, _arrowPrefab, _teleportPrefab, _explosionPrefab;
     public GameObject _planetCoordinatesText;
     public GameObject _camera;
     public GameObject _canvasForControls, _canvasForGameObjects;
@@ -20,7 +21,7 @@ public class main : MonoBehaviour
     public Animator _animator;
     public ParticleSystem _coinExplosion;
 
-    private bool _inCollision = false;
+    private bool _inCollision = false, _levelFinished=false;
 
     private GameObject Explosion
     {
@@ -33,15 +34,31 @@ public class main : MonoBehaviour
 
     void Start()
     {
-        _manager = new GameObjectsManager(_starPrefab, _coinPrefab, _wallPrefab, _arrowPrefab
-                                          , _canvasForControls, _canvasForGameObjects
-                                          , FileReader.LoadFile(GetCurrentLevel(), this));
+        FileReader.LoadFile(GetCurrentLevel(), this, this.LevelIsLoaded);
+        Lean.Touch.LeanTouch.OnGesture += OnGesture;
+
+        for (int i = 0; i != _canvasForControls.transform.childCount; ++i)
+        {
+            var child = _canvasForControls.transform.GetChild(i);
+            if (child.tag == "zoomEnlarge")
+                child.GetComponent<Button>().onClick.AddListener(delegate { Zoom(0.8f); });
+            else if (child.tag == "zoomReduce")
+                child.GetComponent<Button>().onClick.AddListener(delegate { Zoom(1.2f); });
+            else if (child.tag == "nextLevelButton")
+                child.GetComponent<Button>().onClick.AddListener(delegate { SceneManager.LoadScene("mainScene"); });
+            else if (child.tag == "mainMenuButton")
+                child.GetComponent<Button>().onClick.AddListener(delegate { SceneManager.LoadScene("SelectLevel"); });
+        }
+    }
+
+    public void LevelIsLoaded(string content)
+    {
+        _manager = new GameObjectsManager(_starPrefab, _coinPrefab, _wallPrefab, _arrowPrefab, _teleportPrefab
+                                          , _canvasForControls, _canvasForGameObjects, content);
         _arrowsVisible = new bool[_manager._arrows.Length];
         for (int i = 0; i != _arrowsVisible.Length; ++i)
             _arrowsVisible[i] = false;
-        Respawn();
-
-        Lean.Touch.LeanTouch.OnGesture += OnGesture;
+        Respawn();        
     }
 
     private void OnDisable()
@@ -98,6 +115,8 @@ public class main : MonoBehaviour
 
     void Update()
     {
+        if (_manager == null || _levelFinished)
+            return;
         UpdateForce();
         _camera.transform.position = new Vector3(_planet.transform.position.x, _planet.transform.position.y, -10f);
         UpdateArrowPosition();
@@ -211,6 +230,7 @@ public class main : MonoBehaviour
     private void ProcessStarsInteractions(ref Vector3 force)
     {
         float deltaX = 0, deltaY = 0;
+
         foreach (var star in _manager._stars)
         {
             float distance = Vector3.Distance(_planet.transform.position, star.transform.position);
@@ -236,8 +256,19 @@ public class main : MonoBehaviour
 
     private void OnLevelComplete()
     {
-        PlayerPrefs.SetInt(GameConstants.CurrentLevelIsCompleted, 1);
-        SceneManager.LoadScene("SelectLevel");
+        MarkCurrentLevelAsCompleted();
+
+        _planet.GetComponent<ConstantForce>().force = new Vector3(0f, 0f, 0f);
+        _planet.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
+        _planet.GetComponent<Rigidbody>().angularVelocity = new Vector3(0f, 0f, 0f);
+        _levelFinished = true;
+
+        for (int i = 0; i != _canvasForControls.transform.childCount; ++i)
+        {
+            var child = _canvasForControls.transform.GetChild(i);
+            if (child.tag == "nextLevelButton" || child.tag == "mainMenuButton" || child.tag == "levelCompleteText")
+                child.gameObject.SetActive(true);
+        }
     }
 
     private void Zoom(float scale)
@@ -251,5 +282,39 @@ public class main : MonoBehaviour
 
         if (newValue != oldValue)
             _camera.GetComponent<Camera>().orthographicSize = newValue;
+    }
+
+    private void MarkCurrentLevelAsCompleted()
+    {
+        if (PlayerPrefs.GetString(GameConstants.CurrentLevel).Length == 0)
+            return;
+
+        FileReader.LoadFile("levelList.xml", this, MarkCurrentLevelAsCompletedCallback);
+    }
+
+    public void MarkCurrentLevelAsCompletedCallback(string content)
+    {
+        XmlDocument xmldoc = new XmlDocument();
+        xmldoc.LoadXml(content);
+        var currentLevel = Convert.ToInt16(PlayerPrefs.GetString(GameConstants.CurrentLevel));
+        currentLevel++;
+        var node = xmldoc.SelectSingleNode("/levels/level[@file=\"" + Convert.ToString(currentLevel) + "\"]");
+        if (node == null)
+            return;
+
+        node.Attributes["enabled"].Value = "true";
+
+        var root = xmldoc.SelectSingleNode("/levels");
+        if (root.Attributes["currentLevel"] == null)
+        {
+            XmlAttribute newAttribute = xmldoc.CreateAttribute("currentLevel");
+            newAttribute.Value = Convert.ToString(currentLevel);
+            root.Attributes.Append(newAttribute);
+        }
+        else
+            root.Attributes["currentLevel"].Value = Convert.ToString(currentLevel);
+
+        FileReader.WriteToFile("levelList.xml", xmldoc.OuterXml);
+        PlayerPrefs.SetString(GameConstants.CurrentLevel, Convert.ToString(currentLevel));        
     }
 }

@@ -8,6 +8,11 @@ TagManager:
   - coin
   - star
   - wall
+  - zoomEnlarge
+  - zoomReduce
+  - levelCompleteText
+  - nextLevelButton
+  - mainMenuButton
   layers:
   - Default
   - TransparentFX

@@ -11,12 +11,14 @@ public class SelectLevel : MonoBehaviour {
     public GameObject _backToMainMenuButton;
 
     void Start () {
-        if (PlayerPrefs.GetInt(GameConstants.CurrentLevelIsCompleted) != 0)
-            MarkCurrentLevelAsCompleted();
-        
-        LoadLevels();
+        FileReader.LoadFile("levelList.xml", this, LevelListIsReady);
         _backToMainMenuButton.GetComponent<Button>().onClick.AddListener(delegate { BackToMainMenu(); });
 	}
+
+    public void LevelListIsReady(string content)
+    {
+        LoadLevels(content);
+    }
 
     private void ButtonClick(string level) {
         PlayerPrefs.SetString(GameConstants.CurrentLevel, level);
@@ -28,9 +30,8 @@ public class SelectLevel : MonoBehaviour {
         SceneManager.LoadScene("mainMenu");
     }
 
-    private void LoadLevels()
+    private void LoadLevels(string content)
     {
-        var content = FileReader.LoadFile("levelList.xml", this);
         XmlDocument xmldoc = new XmlDocument();
         xmldoc.LoadXml(content);
         XmlNodeList levels = xmldoc.SelectNodes("/levels/level");
@@ -42,34 +43,5 @@ public class SelectLevel : MonoBehaviour {
             button.transform.SetParent(_contentPtr.transform, false);
             button.GetComponent<Button>().interactable = Convert.ToBoolean(level.Attributes.GetNamedItem("enabled").Value);
         }
-    }
-
-    private void MarkCurrentLevelAsCompleted()
-    {
-        if (PlayerPrefs.GetString(GameConstants.CurrentLevel).Length == 0)
-            return;
-        
-        var content = FileReader.LoadFile("levelList.xml", this);
-        XmlDocument xmldoc = new XmlDocument();
-        xmldoc.LoadXml(content);
-        var currentLevel = Convert.ToInt16(PlayerPrefs.GetString(GameConstants.CurrentLevel));
-        currentLevel++;
-        var node = xmldoc.SelectSingleNode("/levels/level[@file=\"" + Convert.ToString(currentLevel) + "\"]");
-        if (node == null)
-            return;
-        
-        node.Attributes["enabled"].Value = "true";
-
-        var root = xmldoc.SelectSingleNode("/levels");
-        if (root.Attributes["currentLevel"] == null)
-        {
-            XmlAttribute newAttribute = xmldoc.CreateAttribute("currentLevel");
-            newAttribute.Value = Convert.ToString(currentLevel);
-            root.Attributes.Append(newAttribute);
-        }
-        else
-            root.Attributes["currentLevel"].Value = Convert.ToString(currentLevel);
-
-        FileReader.WriteToFile("levelList.xml", xmldoc.OuterXml);
     }
 }
