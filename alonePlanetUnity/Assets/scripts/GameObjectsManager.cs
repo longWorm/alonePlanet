@@ -27,13 +27,19 @@ namespace alonePlanetUnity.Assets
             public float x, y, r;
         }
 
+        protected unsafe struct Teleport
+        {
+            public Circle input, output;
+        }
+
         protected struct Rectangle
         {
             public float x, y, w, h;
         }
 
-        private Circle[] _coinsParameters, _starsParameters, _teleportsParameters;
+        private Circle[] _coinsParameters, _starsParameters;
         private Rectangle[] _wallsParameters;
+        private Teleport[] _teleportsParameters;
 
         private GameObject _coinPrefab, _wallPrefab, _starPrefab, _arrowPrefab, _teleportPrefab;
 
@@ -125,11 +131,15 @@ namespace alonePlanetUnity.Assets
                 foreach (var teleport in _teleports)
                     UnityEngine.Object.Destroy(teleport);
 
-            _teleports = new GameObject[_teleportsParameters.GetLength(0)];
+            _teleports = new GameObject[_teleportsParameters.GetLength(0) * 2];
             var i = 0;
             foreach (var teleport in _teleportsParameters)
             {
-                _teleports[i] = CreateGO(_teleportPrefab, _canvasForGameObjects, teleport);
+                _teleports[i] = CreateGO(_teleportPrefab, _canvasForGameObjects, teleport.input);
+                _teleports[i].GetComponent<TeleportGameObject>()._index = i;
+                i++;
+                _teleports[i] = CreateGO(_teleportPrefab, _canvasForGameObjects, teleport.output);
+                _teleports[i].GetComponent<TeleportGameObject>()._index = i;
                 i++;
             }
         }
@@ -192,14 +202,15 @@ namespace alonePlanetUnity.Assets
             return result;
         }
 
-        // Stars and coins
+        // Stars, coins, teleports
         private GameObject CreateGO(GameObject prefab, GameObject parent, Circle par)
         {
             var result = GameObject.Instantiate(prefab, new Vector3(par.x, par.y, 5.0f), Quaternion.identity);
             result.transform.position = new Vector3(par.x, par.y, 1f);
+            //result.transform.localPosition = new Vector3(par.x, par.y, 1f);
 			result.transform.localScale = new Vector3(par.r, par.r, par.r);
             result.transform.SetParent(parent.transform);
-			result.SetActive(true);
+            result.SetActive(true);
             return result;
 		}
 
@@ -211,6 +222,19 @@ namespace alonePlanetUnity.Assets
             result.transform.localScale = new Vector3(par.w, par.h, 1f);
             result.transform.SetParent(parent.transform);
             result.SetActive(true);
+            return result;
+        }
+
+        private Teleport GetTeleportFromNode(XmlNode node)
+        {
+            var rect = _canvasForGameObjects.GetComponent<RectTransform>().rect;
+
+            Teleport result = new Teleport();
+            result.input.x = rect.width / 2 + float.Parse(node.Attributes.GetNamedItem("x1").Value, CultureInfo.InvariantCulture);
+            result.input.y = rect.height / 2 + float.Parse(node.Attributes.GetNamedItem("y1").Value, CultureInfo.InvariantCulture);
+            result.output.x = rect.width / 2 + float.Parse(node.Attributes.GetNamedItem("x2").Value, CultureInfo.InvariantCulture);
+            result.output.y = rect.height / 2 + float.Parse(node.Attributes.GetNamedItem("y2").Value, CultureInfo.InvariantCulture);
+            result.input.r = result.output.r = float.Parse(node.Attributes.GetNamedItem("r").Value, CultureInfo.InvariantCulture);
             return result;
         }
 
@@ -250,14 +274,14 @@ namespace alonePlanetUnity.Assets
             return result;
 		}
 
-        private Circle[] GetTeleports(ref XmlDocument xmldoc)
+        private Teleport[] GetTeleports(ref XmlDocument xmldoc)
         {
-            XmlNodeList stars = xmldoc.SelectNodes("/Body/Teleports/Teleport");
-            Circle[] result = new Circle[stars.Count];
+            XmlNodeList teleports = xmldoc.SelectNodes("/Body/Teleport");
+            Teleport[] result = new Teleport[teleports.Count];
             int i = 0;
-            foreach (XmlNode star in stars)
+            foreach (XmlNode tp in teleports)
             {
-                result[i] = GetCircleFromNode(star);
+                result[i] = GetTeleportFromNode(tp);
                 i++;
             }
             return result;

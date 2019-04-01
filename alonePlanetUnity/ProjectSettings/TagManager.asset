@@ -13,6 +13,7 @@ TagManager:
   - levelCompleteText
   - nextLevelButton
   - mainMenuButton
+  - teleport
   layers:
   - Default
   - TransparentFX

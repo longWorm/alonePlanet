@@ -21,7 +21,8 @@ public class main : MonoBehaviour
     public Animator _animator;
     public ParticleSystem _coinExplosion;
 
-    private bool _inCollision = false, _levelFinished=false;
+    private bool _inCollision = false, _levelFinished=false, _teleporting=false;
+    private int _teleportIndex = 0;
 
     private GameObject Explosion
     {
@@ -94,12 +95,33 @@ public class main : MonoBehaviour
             if (_manager._coins.Length == 0)
                 OnLevelComplete();
         }
+        else if (col.gameObject.tag == "teleport" && !_teleporting)
+        {
+            _teleporting = true;
+            _teleportIndex = col.gameObject.GetComponent<TeleportGameObject>()._index;
+            _animator.SetTrigger("grow");
+        }
+    }
+
+    public void Teleport()
+    {
+        int bindedTeleportIndex = 0;
+        switch (_teleportIndex % 2)
+        {
+            case 0:
+                bindedTeleportIndex = _teleportIndex + 1;
+                break;
+            case 1:
+                bindedTeleportIndex = _teleportIndex - 1;
+                break;
+        }
+        _planet.transform.position = _manager._teleports[bindedTeleportIndex].transform.position;
     }
 
     public void Respawn()
     {
         _animator.ResetTrigger("collision");
-        _inCollision = false;
+        _inCollision = _teleporting = false;
 
         _planet.SetActive(false);
         _planet.transform.position = _manager.PlanetInitialCoordinates;
