@@ -67,6 +67,17 @@ public class main : MonoBehaviour
         Lean.Touch.LeanTouch.OnGesture -= OnGesture;
     }
 
+    private void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject.tag == "teleport" && !_teleporting)
+        {
+            Debug.Log("teleport");
+            _teleporting = true;
+            _teleportIndex = col.gameObject.GetComponent<TeleportGameObject>()._index;
+            _animator.SetTrigger("grow");
+        }
+    }
+
     void OnCollisionEnter(Collision col)
     {
         if (col.gameObject.tag == "star" && !_inCollision)
@@ -95,12 +106,6 @@ public class main : MonoBehaviour
             if (_manager._coins.Length == 0)
                 OnLevelComplete();
         }
-        else if (col.gameObject.tag == "teleport" && !_teleporting)
-        {
-            _teleporting = true;
-            _teleportIndex = col.gameObject.GetComponent<TeleportGameObject>()._index;
-            _animator.SetTrigger("grow");
-        }
     }
 
     public void Teleport()
@@ -116,6 +121,11 @@ public class main : MonoBehaviour
                 break;
         }
         _planet.transform.position = _manager._teleports[bindedTeleportIndex].transform.position;
+    }
+
+    public void ResetTeleportingFlag()
+    {
+        _teleporting = false;
     }
 
     public void Respawn()

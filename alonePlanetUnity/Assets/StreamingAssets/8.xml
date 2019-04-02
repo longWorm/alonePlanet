@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Body>
     <Teleport x1="1.0" y1="1.0" x2="-1.0" y2="-1.0" r="0.5"/>
-    <Stars>
+<!--    <Stars>
         <Star x="0.0" y="0.0" r="1"/>
-    </Stars>
+    </Stars>-->
 
     <Planet x="-5.0" y="0.0" r="0.5"/>
 </Body>
