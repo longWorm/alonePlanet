@@ -69,9 +69,25 @@ public class main : MonoBehaviour
 
     private void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.tag == "teleport" && !_teleporting)
+        if (col.gameObject.tag == "star" && !_inCollision)
         {
-            Debug.Log("teleport");
+            _inCollision = true;
+            _planet.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionX 
+                | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+            Debug.Log("star collision");
+            var ps = _planet.GetComponent<ParticleSystem>();
+            ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams
+            {
+                startLifetime = 20f
+            };
+            ps.Emit(emitOverride, 100);
+            _animator.SetTrigger("collision");
+            Explosion.transform.position = _planet.transform.position;
+            Explosion.GetComponent<ParticleSystem>().Play();
+        }
+        else if (col.gameObject.tag == "teleport" && !_teleporting)
+        {
+            Debug.Log("teleporting");
             _teleporting = true;
             _teleportIndex = col.gameObject.GetComponent<TeleportGameObject>()._index;
             _animator.SetTrigger("grow");
@@ -80,20 +96,7 @@ public class main : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.tag == "star" && !_inCollision)
-        {
-            var ps = _planet.GetComponent<ParticleSystem>();
-            ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams
-            {
-                startLifetime = 20f
-            };
-            ps.Emit(emitOverride, 100);
-            _animator.SetTrigger("collision");
-            _inCollision = true;
-            Explosion.transform.position = _planet.transform.position;
-            Explosion.GetComponent<ParticleSystem>().Play();
-        }
-        else if (col.gameObject.tag == "coin")
+        if (col.gameObject.tag == "coin")
         {
             ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams
             {
@@ -137,6 +140,7 @@ public class main : MonoBehaviour
         _planet.transform.position = _manager.PlanetInitialCoordinates;
         _planet.transform.localScale = _manager.PlanetInitialScale;
         _planet.transform.SetParent(_canvasForGameObjects.transform);
+        _planet.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
         _planet.SetActive(true);
         _planet.GetComponent<ConstantForce>().force = new Vector3(0f, 0f, 0f);
         _planet.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
@@ -147,7 +151,7 @@ public class main : MonoBehaviour
 
     void Update()
     {
-        if (_manager == null || _levelFinished)
+        if (_manager == null || _levelFinished || _inCollision)
             return;
         UpdateForce();
         _camera.transform.position = new Vector3(_planet.transform.position.x, _planet.transform.position.y, -10f);
