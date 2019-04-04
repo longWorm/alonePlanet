@@ -74,29 +74,21 @@ public class main : MonoBehaviour
             _inCollision = true;
             _planet.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionX 
                 | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
-            Debug.Log("star collision");
-            var ps = _planet.GetComponent<ParticleSystem>();
             ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams
             {
                 startLifetime = 20f
             };
-            ps.Emit(emitOverride, 100);
+            _planet.GetComponent<ParticleSystem>().Emit(emitOverride, 100);
             _animator.SetTrigger("collision");
-            Explosion.transform.position = _planet.transform.position;
             Explosion.GetComponent<ParticleSystem>().Play();
         }
         else if (col.gameObject.tag == "teleport" && !_teleporting)
         {
-            Debug.Log("teleporting");
             _teleporting = true;
             _teleportIndex = col.gameObject.GetComponent<TeleportGameObject>()._index;
             _animator.SetTrigger("grow");
         }
-    }
-
-    void OnCollisionEnter(Collision col)
-    {
-        if (col.gameObject.tag == "coin")
+        else if (col.gameObject.tag == "coin")
         {
             ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams
             {

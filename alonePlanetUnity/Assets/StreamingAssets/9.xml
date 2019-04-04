@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Body>
+    <Coins>
+        <Coin x="4.0" y="0" r="0.5"/>
+	<Coin x="3.0" y="0" r="0.5"/>
+	<Coin x="2.0" y="0" r="0.5"/>
+	<Coin x="1.0" y="0" r="0.5"/>
+	<Coin x="0.0" y="0" r="0.5"/>
+    </Coins>
+    <Planet x="-2.0" y="0.0" r="0.5"/>
+</Body>

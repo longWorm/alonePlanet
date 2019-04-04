@@ -153,6 +153,7 @@
     <None Include="Assets\StreamingAssets\6.xml" />
     <None Include="Assets\StreamingAssets\7.xml" />
     <None Include="Assets\StreamingAssets\8.xml" />
+    <None Include="Assets\StreamingAssets\9.xml" />
     <None Include="Assets\StreamingAssets\levelList.xml" />
     <None Include="Assets\externalAssets\LeanTouch\Examples\Fonts\OFL.txt" />
     <None Include="Assets\externalAssets\LeanTouch\Examples\Shaders\Skybox.shader" />

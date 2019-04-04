@@ -8,7 +8,7 @@
       <File FileName="Assets/scripts/SelectLevel.cs" Line="34" Column="6" />
       <File FileName="Assets/StreamingAssets/levelList.xml" Line="1" Column="1" />
       <File FileName="Assets/StreamingAssets/8.xml" Line="4" Column="5" />
-      <File FileName="Assets/scripts/main.cs" Line="128" Column="30" />
+      <File FileName="Assets/scripts/main.cs" Line="143" Column="83" />
       <File FileName="Assets/StreamingAssets/1.xml" Line="6" Column="1" />
       <File FileName="Assets/scripts/TeleportGameObject.cs" Line="9" Column="31" />
       <File FileName="Assets/scripts/QuitToMainMenu.cs" Line="12" Column="1" />
