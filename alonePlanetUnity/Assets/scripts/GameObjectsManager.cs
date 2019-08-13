@@ -100,7 +100,7 @@ namespace alonePlanetUnity.Assets
             _wallsParameters = GetWalls(ref xmldoc);
 		}
 
-        private void CreateArrows()
+        public void CreateArrows()
         {
             if (_arrows != null)
                 foreach (var arrow in _arrows)
@@ -185,6 +185,12 @@ namespace alonePlanetUnity.Assets
                     var tmp = new List<GameObject>(_coins);
                     tmp.RemoveAt(index);
                     _coins = tmp.ToArray();
+
+                    UnityEngine.Object.Destroy(_arrows[index]);
+                    var temp = new List<GameObject>(_arrows);
+                    temp.RemoveAt(index);
+                    _arrows = temp.ToArray();
+
                     break;
                 }
                 index++;
@@ -335,7 +341,6 @@ namespace alonePlanetUnity.Assets
             {
                 float x = (float)(Radius * Math.Cos(angle));
                 float y = (float)(Radius * Math.Sin(angle));
-                Debug.Log("X = " + x + " Y = " + y);
                 Rectangle rect = new Rectangle();
                 rect.x = canvasRect.width / 2 + x;
                 rect.y = canvasRect.height / 2 + y;
