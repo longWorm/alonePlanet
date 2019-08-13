@@ -11,7 +11,7 @@ namespace alonePlanetUnity.Assets
 {
     public class GameObjectsManager
     {
-        public GameObject[] _stars, _walls, _coins, _teleports, _arrows;
+        public GameObject[] _stars, _walls, _worldBoundaries, _coins, _teleports, _arrows;
 
         private GameObject _canvasForControls, _canvasForGameObjects;
 
@@ -82,6 +82,7 @@ namespace alonePlanetUnity.Assets
             CreateTeleports();
             CreateWalls();
             CreateArrows();
+            CreateWorldBoundaries();
         }
 
         public void LoadLevel(string content)
@@ -207,7 +208,6 @@ namespace alonePlanetUnity.Assets
         {
             var result = GameObject.Instantiate(prefab, new Vector3(par.x, par.y, 5.0f), Quaternion.identity);
             result.transform.position = new Vector3(par.x, par.y, 1f);
-            //result.transform.localPosition = new Vector3(par.x, par.y, 1f);
 			result.transform.localScale = new Vector3(par.r, par.r, par.r);
             result.transform.SetParent(parent.transform);
             result.SetActive(true);
@@ -318,6 +318,34 @@ namespace alonePlanetUnity.Assets
         {
             XmlNode planet = xmldoc.SelectSingleNode("/Body/Planet");
             return GetCircleFromNode(planet);
+        }
+
+        private void CreateWorldBoundaries()
+        {
+            if (_worldBoundaries != null)
+                return;
+            const float Radius = 10f;
+            const int NumberOfBoundaries = (int)(2 * Math.PI / 0.3);
+
+            var canvasRect = _canvasForGameObjects.GetComponent<RectTransform>().rect;
+
+            _worldBoundaries = new GameObject[NumberOfBoundaries];
+            int i = 0;
+            for (float angle = 0; angle <= 2 * Math.PI; angle += 0.3f)
+            {
+                float x = (float)(Radius * Math.Cos(angle));
+                float y = (float)(Radius * Math.Sin(angle));
+                Debug.Log("X = " + x + " Y = " + y);
+                Rectangle rect = new Rectangle();
+                rect.x = canvasRect.width / 2 + x;
+                rect.y = canvasRect.height / 2 + y;
+                rect.w = 2.9f;
+                rect.h = 0.2f;
+
+                _worldBoundaries[i] = CreateGO(_wallPrefab, _canvasForGameObjects, rect);
+                _worldBoundaries[i].GetComponent<Transform>().Rotate(0f,0f, ((float)Math.PI / 2 + angle )/ Mathf.Deg2Rad);
+                _worldBoundaries[i].GetComponent<MeshRenderer>().enabled = false;
+            }
         }
     }
 }

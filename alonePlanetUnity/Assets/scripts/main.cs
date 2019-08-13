@@ -156,6 +156,7 @@ public class main : MonoBehaviour
         ProcessUserInput(ref force);
         ProcessStarsInteractions(ref force);
         _planet.GetComponent<ConstantForce>().force = new Vector3(force.x, force.y, 0.0f);
+
         //UpdatePlanetCoordinatesText();
     }
 

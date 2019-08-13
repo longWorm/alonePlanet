@@ -34,7 +34,7 @@ public class FileReader
     }
 #endif
 
-#if UNITY_STANDALONE_OSX //|| UNITY_WEBGL
+#if UNITY_STANDALONE_OSX
     public static void LoadFile(string fileName, MonoBehaviour monoBehaviour, Action<string> callback)
     {
         var path = System.IO.Path.Combine(Application.streamingAssetsPath, fileName);
